@@ -21,6 +21,10 @@ ZulluOS is an interactive, Windows-XP-styled portfolio for **Shaka Nathan K**, a
 - xp.css (Windows XP visual chrome)
 - Tailwind CSS
 
+## Documentation
+
+See **[DOCUMENTATION.md](DOCUMENTATION.md)** for the architecture guide (boot flow, window system, Merlin's brain, theming), a content-editing cheat-sheet, deployment notes, and the future-work roadmap.
+
 ## Development
 
 ```bash
