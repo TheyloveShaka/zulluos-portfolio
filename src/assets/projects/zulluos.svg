@@ -1,0 +1,26 @@
+<svg width="800" height="500" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="osBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a246a" />
+      <stop offset="50%" stop-color="#3a6ea5" />
+      <stop offset="100%" stop-color="#5ea0e0" />
+    </linearGradient>
+    <linearGradient id="osHill" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#7cc576" />
+      <stop offset="100%" stop-color="#3f9142" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#osBg)" />
+  <circle cx="120" cy="90" r="150" fill="#ffffff" opacity="0.08" />
+  <circle cx="680" cy="60" r="90" fill="#ffffff" opacity="0.07" />
+  <path d="M0 420 Q 200 340 400 400 T 800 380 V500 H0 Z" fill="url(#osHill)" />
+  <path d="M0 460 Q 220 400 420 440 T 800 430 V500 H0 Z" fill="#2d7a34" opacity="0.85" />
+  <g transform="translate(340,215)">
+    <rect x="0" y="0" width="30" height="30" fill="#ff4b4b" />
+    <rect x="34" y="0" width="30" height="30" fill="#7cbb00" />
+    <rect x="0" y="34" width="30" height="30" fill="#00a4ef" />
+    <rect x="34" y="34" width="30" height="30" fill="#ffb900" />
+  </g>
+  <text x="400" y="340" font-family="'Trebuchet MS', Tahoma, sans-serif" font-weight="bold" font-size="46" fill="#ffffff" text-anchor="middle">ZulluOS</text>
+  <text x="400" y="374" font-family="Tahoma, Verdana, sans-serif" font-size="16" fill="#dbe9fb" text-anchor="middle" letter-spacing="2">AN XP-STYLE PORTFOLIO EXPERIENCE</text>
+</svg>

@@ -1,0 +1,15 @@
+<svg width="800" height="500" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="ph4Bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3a3a3a" />
+      <stop offset="100%" stop-color="#1c1c1c" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#ph4Bg)" />
+  <g opacity="0.25" stroke="#9a9a9a" stroke-dasharray="6 8" stroke-width="2">
+    <rect x="40" y="40" width="720" height="420" fill="none" />
+  </g>
+  <text x="400" y="270" font-family="Georgia, serif" font-size="120" fill="#8a8a8a" text-anchor="middle">?</text>
+  <text x="400" y="360" font-family="Verdana, Arial, sans-serif" font-size="20" fill="#c9c9c9" text-anchor="middle" letter-spacing="1">PROJECT #4</text>
+  <text x="400" y="390" font-family="Verdana, Arial, sans-serif" font-size="14" fill="#8a8a8a" text-anchor="middle" letter-spacing="1">STILL COMPILING</text>
+</svg>

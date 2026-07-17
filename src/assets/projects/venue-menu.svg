@@ -1,0 +1,23 @@
+<svg width="800" height="500" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="vmBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f2e22" />
+      <stop offset="55%" stop-color="#1b4332" />
+      <stop offset="100%" stop-color="#2d6a4f" />
+    </linearGradient>
+    <linearGradient id="vmGold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e6c565" />
+      <stop offset="100%" stop-color="#c9a227" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#vmBg)" />
+  <g opacity="0.15" stroke="#e6c565" stroke-width="1">
+    <line x1="0" y1="125" x2="800" y2="125" />
+    <line x1="0" y1="250" x2="800" y2="250" />
+    <line x1="0" y1="375" x2="800" y2="375" />
+  </g>
+  <circle cx="400" cy="210" r="70" fill="none" stroke="url(#vmGold)" stroke-width="3" />
+  <path d="M368 218 L400 190 L432 218 L432 250 L368 250 Z" fill="none" stroke="#e6c565" stroke-width="3" stroke-linejoin="round" />
+  <text x="400" y="330" font-family="Georgia, 'Times New Roman', serif" font-size="42" fill="#f6efe0" text-anchor="middle" letter-spacing="1">The Venue Menu</text>
+  <text x="400" y="368" font-family="Verdana, Arial, sans-serif" font-size="16" fill="#e6c565" text-anchor="middle" letter-spacing="3">UGANDA WEDDING &amp; VENUE DISCOVERY</text>
+</svg>
