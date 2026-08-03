@@ -47,7 +47,6 @@ ZulluOS is **forked and adapted from [kisimoff.com](https://kisimoff.com)**, the
 Additional credits carried over from the original project:
 
 - **Logo & CPU Portal animation** — [Valentin Ivanov](https://www.hivaldesign.com/), an RSA Award-winning animation. Watch it [here](https://www.youtube.com/watch?v=6k12O1iADwc).
-- **Eye design** — inspired by [HAL-9000](https://en.wikipedia.org/wiki/HAL_9000), built with Midjourney and Framer Motion.
 - **Inspiration** — the OS-as-portfolio concept was inspired by [Poolside FM](https://poolsuite.net/).
 - **Merlin assistant** — powered by [clippy-js](https://github.com/pi0/clippy.js) / [clippyts](https://www.npmjs.com/package/clippyts).
 - **Windows XP look & feel** — [xp.css](https://github.com/botoxparty/XP.css).

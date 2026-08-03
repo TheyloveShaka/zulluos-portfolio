@@ -2,7 +2,6 @@ import { motion } from 'framer-motion'
 import { SlSocialLinkedin } from 'react-icons/sl'
 import { VscGithubAlt } from 'react-icons/vsc'
 import { IoLogoGitlab } from 'react-icons/io5'
-import ToggleButton from './ToggleButton'
 import IconTask from './IconTask'
 import logo_white from '../img/logo_white.png'
 import {
@@ -13,7 +12,7 @@ import { useAnimations } from '@contexts/AnimationsContext'
 import { useWindows } from '@contexts/WindowsContext'
 
 function Navbar() {
-  const { themeValues, toggleTheme } = useTheme()
+  const { themeValues } = useTheme()
   const { navbarAnimation } = useAnimations()
   const { windows } = useWindows()
 
@@ -28,9 +27,7 @@ function Navbar() {
       <div className="nav-heading">
         <img id="logo" alt="logo" src={logo_white} />
         <span style={isTablet ? { width: '350px' } : undefined}>
-          Zullu
-          <ToggleButton onChange={toggleTheme} />
-          OS
+          ZulluOS
         </span>
       </div>
       <div

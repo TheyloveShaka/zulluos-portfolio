@@ -2,9 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import { WindupChildren, Pause, Pace, Effect } from 'windups'
 import { delay, motion, useAnimation } from 'framer-motion'
 import LogoBoot2 from '@/components/logoBootAnimation'
-import TheEye from '@components/theEye'
 import portal from '@assets/videos/cpuPortal.mp4'
-import cpuLoop from '@assets/videos/cpuLoop.mp4'
 import {
   deviceType,
   osName,
@@ -33,37 +31,15 @@ const LoadingScreen = () => {
   const [fastBoot, setFastBoot] = useState(false)
 
 
-  const loopAnimation = useAnimation()
   const portalAnimation = useAnimation()
 
   const videoEl = useRef<HTMLVideoElement>(null)
-  const loopVideoEl = useRef<HTMLVideoElement>(null)
-
-  const { themeState } = useTheme()
-
-  function openCredits() {
-    creditsWindow.openOrFocus()
-  }
 
   const attemptPlay = (refToPlay: React.RefObject<HTMLVideoElement>) => {
     refToPlay.current?.play().catch((error) => {
       console.error('Error attempting to play', error)
     })
   }
-
-  useEffect(() => {
-    if (themeState === 'xp') {
-      backgroundAnimation.start({
-        opacity: 0,
-        transition: { duration: 1, ease: 'easeIn' },
-      })
-    } else {
-      backgroundAnimation.start({
-        opacity: 1,
-        transition: { duration: 1, ease: 'easeIn' },
-      })
-    }
-  }, [themeState, backgroundAnimation])
 
   const logoClick = () => {
     attemptPlay(videoEl)
@@ -85,16 +61,6 @@ const LoadingScreen = () => {
     setLogoAnimation(false) // skips the logo animation
     setFastBoot(true)
     document.getElementById('bootRoot')!.style.display = 'none' //Disables the loading screen
-    loopAnimation //starts the background video
-      .start({
-        opacity: 1,
-        transition: { duration: 1 },
-      })
-      .then(() => {
-        attemptPlay(loopVideoEl)
-      })
-
-
 
     setTimeout(() => {
       navbarAnimation.start(
@@ -114,19 +80,7 @@ const LoadingScreen = () => {
 
 
 
-    setLogoClicked(true) //enables the eye and starts looking around
-
-
-    // elementsSequenceAnimation()
-    // // startWindow.openOrFocus()
-    // loopAnimation
-    //   .start({
-    //     opacity: 1,
-    //     transition: { duration: 1 },
-    //   })
-    //   .then(() => {
-    //     attemptPlay(loopVideoEl)
-    //   })
+    setLogoClicked(true)
   }
 
 
@@ -169,46 +123,31 @@ const LoadingScreen = () => {
 
 
 
+  // The portal plays as the boot transition, then fades out to reveal the XP
+  // desktop underneath. (Upstream cross-faded into a looping neon circuit
+  // background here; ZulluOS lands on the Windows wallpaper instead.)
   const videosSequenceAnimation = async () => {
     portalAnimation.start({
       opacity: 0,
-      transition: { duration: 1, delay: 7 },
+      transition: { duration: 1.5, delay: 6 },
     })
-
-    loopAnimation
-      .start({
-        opacity: 1,
-        transition: { duration: 1, delay: 5.5 },
-      })
-      .then(() => {
-        attemptPlay(loopVideoEl)
-      })
   }
 
   return (
     <>
       {logoAnimation && <LogoBoot2 onLogoClick={logoClick} />}
       <motion.div initial={{ opacity: 1 }} animate={backgroundAnimation}>
-        {logoClicked && <TheEye fastBoot={fastBoot} onEyeClick={openCredits} />}
-        <motion.video
-          animate={portalAnimation}
-          initial={{ opacity: 1 }}
-          className="video-background"
-          playsInline
-          muted
-          src={portal}
-          ref={videoEl}
-        />
-        <motion.video
-          animate={loopAnimation}
-          initial={{ opacity: 0 }}
-          className="video-background"
-          playsInline
-          muted
-          src={cpuLoop}
-          ref={loopVideoEl}
-          loop
-        />
+        {!fastBoot && (
+          <motion.video
+            animate={portalAnimation}
+            initial={{ opacity: 1 }}
+            className="video-background"
+            playsInline
+            muted
+            src={portal}
+            ref={videoEl}
+          />
+        )}
       </motion.div>
 
       {!fastBoot && <div className="boot-screen" id="bootRoot">

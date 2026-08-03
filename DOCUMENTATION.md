@@ -16,7 +16,6 @@ src/
 │   ├── Navbar.tsx             # Bottom taskbar: "Zullu OS" wordmark, theme toggle, socials
 │   ├── Icon.tsx / IconTask.tsx# Desktop icons and taskbar entries
 │   ├── logoBootAnimation.tsx  # SVG boot-logo animation (click to enter)
-│   ├── theEye.tsx             # The HAL-9000-style eye on the desktop
 │   ├── screens/
 │   │   ├── LoadingScreen.tsx  # Boot sequence: logo → BIOS text → CPU portal video
 │   │   └── Desktop.tsx
@@ -43,19 +42,24 @@ public/
 ## 2. Boot flow
 
 1. `LoadingScreen.tsx` renders the boot logo (`logoBootAnimation.tsx`). Clicking it starts the BIOS-style text sequence and the CPU-portal video.
-2. When the portal finishes, the boot overlay (`#bootRoot`) is removed from the DOM and the desktop (icons, navbar, eye) animates in.
+2. When the portal finishes, it fades out to reveal the XP desktop, the boot overlay (`#bootRoot`) is removed from the DOM, and the icons and taskbar animate in.
 3. The terminal command `fastboot on` persists a flag (via ZenFS/localStorage) that skips the boot sequence on future visits; `fastboot off` restores it.
 4. Merlin waits for `#bootRoot` to disappear (MutationObserver + 20s safety timeout) before appearing — see `useDesktopReady()` in `Wizard.tsx`.
 
-## 3. Theming — and the pink-to-blue story
+## 3. Theming — one OS look, and the pink-to-blue story
 
-The upstream site used a magenta/pink palette. ZulluOS is blue. Three kinds of color had to move:
+**ZulluOS ships the classic Windows XP look only.** The upstream project had a second "dark"/neon theme (a looping magenta circuit-board video with a HAL-9000-style eye) and a navbar toggle to switch between them. That whole layer was removed: `ThemeContext.tsx` now pins `theme = 'xp'`, and `theEye.tsx`, `ToggleButton.tsx`, and `cpuLoop.mp4` are deleted.
+
+Two consequences worth knowing if you dig in:
+
+- `Icon.tsx` and `IconTask.tsx` still branch on `themeState === 'dark'`. Those branches are now unreachable, which is why `themeState` stays in the context (typed as the single-member union `'xp'`) rather than being ripped out — they can be simplified whenever someone touches those files.
+- The Credits window used to open **only** by clicking the eye. With the eye gone it has a desktop icon instead (`App.tsx` filters out only `start`). Don't re-hide it — that window carries the attribution to the original author.
+
+The remaining pink-to-blue work, since the upstream palette was magenta:
 
 - **CSS colors** — `--accent-color` in `App.css` (`#2f71cd`), the navbar gradient, and the xterm terminal background (`#0a1a33` in `terminalCommandProcessor.ts`).
-- **Baked-in video** — the CPU circuit-board background (`cpuLoop.mp4` / `cpuPortal.mp4`) is rendered magenta *inside the video file*. Rather than re-render the videos, `.video-background` and `.theEye` carry `filter: hue-rotate(-115deg)`, which shifts magenta (≈330°) to blue (≈215°) at zero runtime cost.
-- **Already blue** — the XP "Bliss" wallpaper and the XP window chrome needed no change.
-
-The theme toggle in the navbar switches between the dark desktop and the classic XP look (`ThemeContext.tsx`).
+- **Baked-in video** — the boot portal (`cpuPortal.mp4`) is magenta *inside the video file*. Rather than re-render it, `.video-background` carries `filter: hue-rotate(-115deg)`, which shifts magenta (≈330°) to blue (≈215°) at zero runtime cost.
+- **Already blue** — the XP "Bliss" wallpaper and XP window chrome needed no change.
 
 ## 4. Content — where to edit what
 

@@ -1,8 +1,10 @@
-import { createContext, useContext, useState, ReactNode } from 'react'
+import { createContext, useContext, ReactNode } from 'react'
 import xpWallpaper from '@assets/xpCompress.jpg'
 
-// Define the theme types
-type Theme = 'xp' | 'dark';
+// ZulluOS ships the classic Windows XP look only. The upstream project had a
+// second "dark"/neon theme; the type is kept as a single-member union so the
+// per-theme branches in Icon/IconTask still typecheck against a real value.
+type Theme = 'xp';
 
 // Define the theme values
 const xpTheme = {
@@ -83,37 +85,8 @@ const xpTheme = {
   },
 }
 
-const darkTheme = {
-  window: {
-    backgroundColor: '#cfcfcf46',
-    color: 'white',
-  },
-
-  field: {
-    color: '#F4F4F4',
-    fontWeight: 'normal',
-    backgroundColor: '#0f0e0ff3',
-    boxSizing: 'border-box',
-    boxShadow: '0 2px 5px #111',
-    transition: 'all 0.2s ',
-  },
-  // cursor: { animation: "1.02s blink-dark step-end infinite" },
-  closeBtn: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    textAlign: 'center',
-    color: 'white',
-    fontWeight: 900,
-    padding: '0.6rem 1.2rem',
-    fontSize: '1.2rem',
-    borderRadius: '0px'
-  },
-}
-
 interface ThemeContextType {
   themeState: Theme;
-  toggleTheme: () => void;
   themeValues: any
 }
 
@@ -124,16 +97,10 @@ interface ThemeProviderProps {
 }
 
 export const ThemeProvider = ({ children }: ThemeProviderProps) => {
-  const [theme, setTheme] = useState<Theme>('dark')
-
-  const toggleTheme = () => {
-    setTheme(theme === 'xp' ? 'dark' : 'xp')
-  }
-
-  const themeValues = theme === 'xp' ? xpTheme : darkTheme
+  const theme: Theme = 'xp'
 
   return (
-    <ThemeContext.Provider value={{ themeState: theme, toggleTheme, themeValues }}>
+    <ThemeContext.Provider value={{ themeState: theme, themeValues: xpTheme }}>
       {children}
     </ThemeContext.Provider>
   )

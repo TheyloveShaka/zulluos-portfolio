@@ -70,18 +70,6 @@ const Credits = () => {
               .
               <br />
               <br />
-              <strong>Eye Design:</strong> Inspired by the iconic
-              <a
-                href="https://en.wikipedia.org/wiki/HAL_9000"
-                target="_blank"
-              >
-                {' '}
-                HAL-9000
-              </a>
-              , TheEye was brought into life with the help of Midjourney and
-              Framer Motion.
-              <br />
-              <br />
               <strong>Inspiration: </strong>
               The concept of KisimoffOS (now ZulluOS) was inspired by
               <a href="https://poolsuite.net/" target="_blank">

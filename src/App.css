@@ -149,12 +149,7 @@ body {
   top: 0;
   bottom: 0;
   z-index: 1;
-  /* ZulluOS: the CPU videos are baked magenta — shift them to blue */
-  filter: hue-rotate(-115deg);
-}
-
-/* Keep TheEye in the same blue family as the recolored background videos */
-.theEye {
+  /* ZulluOS: the boot portal video is baked magenta — shift it to blue */
   filter: hue-rotate(-115deg);
 }
 

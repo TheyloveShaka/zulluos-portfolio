@@ -57,7 +57,9 @@ const App = () => {
       >
 
         {Object.entries(windows)
-          .filter(([key]) => !['start', 'credits'].includes(key)) // Exclude 'start' and 'credits'
+          // 'start' has no desktop icon. 'credits' does: it used to open only by
+          // clicking TheEye, which the XP-only desktop no longer renders.
+          .filter(([key]) => key !== 'start')
           .map(([key, window]) => (
             <Icon key={key} window={window} />
           ))}
