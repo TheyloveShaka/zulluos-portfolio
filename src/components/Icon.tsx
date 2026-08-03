@@ -32,11 +32,10 @@ function Icon(props: { window: WindowProps }) {
   const [preventClick, setPreventClick] = useState(false)
   const [placeholderPosition, setPlaceholderPosition] = useState<IconPosition | null>(null)
 
-  // export type WindowKey = 'terminal2' | 'about' | 'deviceInfo' | 'projects' | 'start' | 'credits' | 'winamp' | 'resume'
+  // export type WindowKey = 'terminal2' | 'about' | 'deviceInfo' | 'projects' | 'start' | 'credits' | 'resume'
 
   // Define mobile positions for icons
   const mobilePositions: { [key: string]: IconPosition } = {
-    winamp: { gridRowStart: 3, gridColumnStart: 1 },
     terminal2: { gridRowStart: 3, gridColumnStart: 2 },
     deviceInfo: { gridRowStart: 3, gridColumnStart: 3 },
     projects: { gridRowStart: 2, gridColumnStart: 3 },
@@ -159,11 +158,7 @@ function Icon(props: { window: WindowProps }) {
         >
           <button className="iconWrapper-mobile unstyledButton" onClick={handleClick}>
             {themeState === 'dark' ? (
-              props.window.elementId !== 'winamp' ? (
-                <props.window.osIcon className="pointer-events-none icon" />
-              ) : (
-                <img src={props.window.osIcon} className="pointer-events-none icon" />
-              )
+              <props.window.osIcon className="pointer-events-none icon" />
             ) : (
               <img src={props.window.xpIcon} className="pointer-events-none icon" />
             )}
@@ -182,11 +177,7 @@ function Icon(props: { window: WindowProps }) {
           >
             <button className="iconWrapper unstyledButton" onClick={handleClick}>
               {themeState === 'dark' ? (
-                props.window.elementId !== 'winamp' ? (
-                  <props.window.osIcon className="pointer-events-none icon" />
-                ) : (
-                  <img src={props.window.osIcon} className="pointer-events-none icon" />
-                )
+                <props.window.osIcon className="pointer-events-none icon" />
               ) : (
                 <img src={props.window.xpIcon} className="pointer-events-none icon" />
               )}

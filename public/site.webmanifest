@@ -1,6 +1,6 @@
 {
-    "name": "ZulluOS",
-    "short_name": "ZulluOS",
+    "name": "Shaka's Portfolio",
+    "short_name": "Shaka's Portfolio",
     "icons": [
         {
             "src": "/android-chrome-192x192.png",
@@ -13,7 +13,7 @@
             "type": "image/png"
         }
     ],
-    "theme_color": "#282828",
-    "background_color": "#282828",
+    "theme_color": "#2f71cd",
+    "background_color": "#0a1a33",
     "display": "standalone"
 }

@@ -43,8 +43,8 @@ const Credits = () => {
               .
               <br />
               <br />
-              <strong>Logo and Animation Design:</strong> Special thanks
-              goes to
+              <strong>Original Logo and Animation Design:</strong> Special
+              thanks goes to
               <a
                 href="https://www.linkedin.com/in/hivaluedesign/"
                 target="_blank"
@@ -53,8 +53,10 @@ const Credits = () => {
                 Valentin Ivanov{' '}
               </a>
               the creative force behind the CPU Portal intro animation and
-              the OS logo (originally KisimoffOS, now ZulluOS). Watch the
-              full RSA Award winning{' '}
+              the OS logo for the original KisimoffOS. Those assets have
+              since been retired and replaced with new ones for this site, but
+              the craft that shaped the original is well worth a look. Watch
+              the full RSA Award winning{' '}
               <a
                 href="https://www.youtube.com/watch?v=6k12O1iADwc"
                 target="_blank"
@@ -71,7 +73,7 @@ const Credits = () => {
               <br />
               <br />
               <strong>Inspiration: </strong>
-              The concept of KisimoffOS (now ZulluOS) was inspired by
+              The concept of KisimoffOS (now Shaka's Portfolio) was inspired by
               <a href="https://poolsuite.net/" target="_blank">
                 {' '}
                 Poolside FM
@@ -103,15 +105,6 @@ const Credits = () => {
                   >
                     {' '}
                     ZenFS
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://github.com/captbaritone/webamp"
-                    target="_blank"
-                  >
-                    {' '}
-                    Webamp
                   </a>
                 </li>
                 <li>
@@ -154,7 +147,7 @@ const Credits = () => {
               <br />
               These invaluable tools played a significant role in the
               successful development and execution of the original
-              KisimoffOS, and continue to power ZulluOS today.
+              KisimoffOS, and continue to power this site today.
             </p>
           </Pace>
         </WindupChildren>

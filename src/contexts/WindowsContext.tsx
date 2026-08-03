@@ -6,8 +6,6 @@ import info from '@assets/icons/xp/about.png'
 import cmd from '@assets/icons/xp/cmd.png'
 import mydocs from '@assets/icons/xp/mydocs.png'
 import textDoc from '@assets/icons/xp/text-doc.png'
-import winampDark from '@assets/icons/xp/winamp-dark.png'
-import winampXp from '@assets/icons/xp/winamp-xp.png'
 
 
 import { TbDeviceDesktopAnalytics } from 'react-icons/tb'
@@ -18,7 +16,7 @@ import { IconType } from 'react-icons'
 import { loadIconPositions, saveIconPositions, defaultIconPositions } from '@/utils/zenFs'
 
 
-export type WindowKey = 'terminal2' | 'about' | 'deviceInfo' | 'projects' | 'start' | 'credits' | 'winamp' | 'resume'
+export type WindowKey = 'terminal2' | 'about' | 'deviceInfo' | 'projects' | 'start' | 'credits' | 'resume'
 
 interface WindowsContextType {
   windows: Record<WindowKey, WindowProps>;
@@ -28,7 +26,6 @@ interface WindowsContextType {
   deviceInfoWindow: WindowProps;
   projectsWindow: WindowProps;
   creditsWindow: WindowProps;
-  winampWindow: WindowProps;
   resumeWindow: WindowProps;
   openOrFocusWindow: (windowKey: WindowKey) => void;
   closeWindow: (windowKey: WindowKey) => void;
@@ -116,7 +113,6 @@ export const WindowsProvider = ({ children }: WindowsProviderProps) => {
     deviceInfo: createWindowConfig('deviceInfo', TbDeviceDesktopAnalytics, mycomp, 'Device'),
     projects: createWindowConfig('projects', BsJournalCode, mydocs, 'Projects'),
     credits: createWindowConfig('credits', BsJournalCode, mydocs, 'Credits'),
-    winamp: createWindowConfig('winamp', winampDark, winampXp, 'Winamp'),
     resume: createWindowConfig('resume', BsJournalCode, textDoc, 'Resume'),
   }
 
@@ -143,7 +139,6 @@ export const WindowsProvider = ({ children }: WindowsProviderProps) => {
         deviceInfoWindow: windows.deviceInfo,
         projectsWindow: windows.projects,
         creditsWindow: windows.credits,
-        winampWindow: windows.winamp,
         openOrFocusWindow,
         closeWindow,
         updateIconPosition,

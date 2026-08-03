@@ -3,7 +3,6 @@ import { SlSocialLinkedin } from 'react-icons/sl'
 import { VscGithubAlt } from 'react-icons/vsc'
 import { IoLogoGitlab } from 'react-icons/io5'
 import IconTask from './IconTask'
-import logo_white from '../img/logo_white.png'
 import {
   isTablet,
 } from 'react-device-detect'
@@ -25,9 +24,8 @@ function Navbar() {
 
     >
       <div className="nav-heading">
-        <img id="logo" alt="logo" src={logo_white} />
         <span style={isTablet ? { width: '350px' } : undefined}>
-          ZulluOS
+          Shaka's Portfolio
         </span>
       </div>
       <div

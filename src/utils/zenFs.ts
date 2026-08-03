@@ -3,13 +3,14 @@ import { configure, fs} from '@zenfs/core'
 import { IndexedDB } from '@zenfs/dom'
 import { IconPositions } from '@contexts/WindowsContext'
 
+// 2-column grid; with Winamp removed the remaining 5 icons are renumbered
+// so there's no empty slot where its icon used to sit.
 export const defaultIconPositions: IconPositions = {
   deviceInfo: { gridColumnStart: 1, gridRowStart: 1 },
   projects: { gridColumnStart: 2, gridRowStart: 1 },
-  winamp: { gridColumnStart: 1, gridRowStart: 2 },
-  terminal2: { gridColumnStart: 2, gridRowStart: 2 },
-  about: { gridColumnStart: 1, gridRowStart: 3 },
-  resume: { gridColumnStart: 2, gridRowStart: 3 },
+  terminal2: { gridColumnStart: 1, gridRowStart: 2 },
+  about: { gridColumnStart: 2, gridRowStart: 2 },
+  resume: { gridColumnStart: 1, gridRowStart: 3 },
   start: { gridColumnStart: 99, gridRowStart: 99 },
   credits: { gridColumnStart: 99, gridRowStart: 99 },
 }

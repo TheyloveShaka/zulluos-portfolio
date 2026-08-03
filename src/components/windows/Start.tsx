@@ -32,7 +32,7 @@ const Start = () => {
           <Pace ms={32}>
             <p>
               <br></br>
-              {'Welcome to ZulluOS.'} <br></br>
+              {'Welcome to Shaka\'s Portfolio.'} <br></br>
             </p>
           </Pace>
           <Pause ms={1000} />
@@ -87,7 +87,7 @@ export default Start
 
 // Hello, friend
 
-// Welcome to ZulluOS.
+// Welcome to Shaka's Portfolio.
 
 // Here, you'll find a Terminal, where commands are king.
 

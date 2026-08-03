@@ -81,10 +81,10 @@ export const INTENTS: WizardIntent[] = [
     id: 'what-is-this-site',
     keywords: ['what is this site', 'what is this', 'what is zulluos', 'what am i looking at', 'this website', 'this os', 'explain this site'],
     responses: [
-      'This is ZulluOS — a Windows XP desktop, faithfully remade in the browser as Shaka\'s portfolio. It\'s adapted from kisimoff.com by Valentin Kisimov, with full credit.',
-      'You\'re looking at ZulluOS: an XP-flavored desktop that doubles as a portfolio site. Double-click around, open some windows, maybe don\'t format the C: drive.',
+      'This is Shaka\'s Portfolio — a Windows XP desktop, faithfully remade in the browser. It\'s adapted from kisimoff.com by Valentin Kisimov, with full credit.',
+      'You\'re looking at Shaka\'s Portfolio: an XP-flavored desktop that doubles as a portfolio site. Double-click around, open some windows, maybe don\'t format the C: drive.',
     ],
-    speak: ['This is ZulluOS: an XP desktop remade as Shaka\'s portfolio.'],
+    speak: ['This is Shaka\'s Portfolio: an XP desktop remade to showcase his work.'],
     animation: 'Explain',
   },
   {
@@ -104,7 +104,7 @@ export const INTENTS: WizardIntent[] = [
     keywords: ['hello', 'hi', 'hey', 'yo', 'sup', 'howdy', 'greetings'],
     responses: [
       'Hello there! I\'m Merlin. Ask me about Shaka\'s projects, skills, or how to reach him.',
-      'Hey! Welcome to ZulluOS. Poke around, or ask me a question — that\'s what I\'m here for.',
+      'Hey! Welcome to Shaka\'s Portfolio. Poke around, or ask me a question — that\'s what I\'m here for.',
       'Howdy! Try asking who built this thing, or what he\'s been working on.',
     ],
     animation: 'Greet',
@@ -159,9 +159,9 @@ export const INTENTS: WizardIntent[] = [
     id: 'zulluos-project',
     keywords: ['zulluos project', 'this portfolio', 'xp desktop', 'kisimoff', 'how was this site built'],
     responses: [
-      'ZulluOS is this very portfolio — an XP desktop remake adapted from kisimoff.com by Valentin Kisimov, with full credit to the original. I live here as the built-in assistant.',
+      'Shaka\'s Portfolio is this very site — an XP desktop remake adapted from kisimoff.com by Valentin Kisimov, with full credit to the original. I live here as the built-in assistant.',
     ],
-    speak: ['ZulluOS is this portfolio itself — an XP remake adapted from kisimoff.com.'],
+    speak: ['This is Shaka\'s Portfolio itself — an XP remake adapted from kisimoff.com.'],
     animation: 'Explain',
     action: 'projects',
   },
@@ -169,9 +169,9 @@ export const INTENTS: WizardIntent[] = [
     id: 'projects',
     keywords: ['projects', 'portfolio', 'show projects', 'show me projects', 'what has he built', 'his work', 'what did he build'],
     responses: [
-      'Opening his Projects folder now. Highlights: The Venue Menu (a wedding venue platform for Kampala) and ZulluOS (this very desktop you\'re using).',
+      'Opening his Projects folder now. Highlights: The Venue Menu (a wedding venue platform for Kampala) and Shaka\'s Portfolio (this very desktop you\'re using).',
     ],
-    speak: ['Opening Projects — The Venue Menu and ZulluOS are the highlights.'],
+    speak: ['Opening Projects — The Venue Menu and Shaka\'s Portfolio are the highlights.'],
     animation: 'Announce',
     action: 'projects',
   },
@@ -213,11 +213,11 @@ export const INTENTS: WizardIntent[] = [
   },
   {
     id: 'music',
-    keywords: ['music', 'winamp', 'play music', 'song', 'playlist', 'play a song'],
-    responses: ['It really whips the llama\'s ass. Opening Winamp now.'],
-    speak: ['Opening Winamp — it really whips the llama\'s ass.'],
-    animation: 'Announce',
-    action: 'winamp',
+    keywords: ['music', 'play music', 'song', 'playlist', 'play a song'],
+    responses: ['No jukebox on this desktop right now — but check out his Projects folder instead.'],
+    speak: ['No jukebox here right now — try the Projects folder instead.'],
+    animation: 'Explain',
+    action: 'projects',
   },
 ]
 

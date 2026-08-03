@@ -53,10 +53,12 @@ button {
 button:hover {
   border-color: #646cff;
 }
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
+/* Leftover Vite template rule removed: it applied to every <button> at
+   higher specificity than App.css's global `:focus-visible` rule (a
+   type+pseudo-class selector beats a bare pseudo-class), so every
+   button's keyboard ring would silently fall back to the browser-native
+   `auto` outline instead of ZulluOS's own blue ring. App.css now owns
+   focus styling site-wide. */
 
 @media (prefers-color-scheme: light) {
   :root {

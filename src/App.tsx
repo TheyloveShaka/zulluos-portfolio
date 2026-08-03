@@ -5,7 +5,6 @@ import Projects from '@components/windows/Projects'
 import Credits from '@components/windows/Credits'
 import About from '@components/windows/About'
 import Xterm from '@/components/windows/Xterm'
-import Winamp from '@/components/windows/Winamp'
 
 import Start from '@components/windows/Start'
 import DeviceInfo from '@components/windows/DeviceInfo'
@@ -74,7 +73,6 @@ const App = () => {
       {windows.credits.visibility && <Credits />}
       {windows.start.visibility && <Start />}
       {windows.terminal2.visibility && <Xterm />}
-      {windows.winamp.visibility && <Winamp />}
 
       <Wizard />
     </div>

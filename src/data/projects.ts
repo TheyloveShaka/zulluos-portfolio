@@ -35,10 +35,10 @@ export const projects: ProjectData[] = [
   },
   {
     id: 'zulluos',
-    title: 'ZulluOS (this site)',
+    title: 'Shaka\'s Portfolio (this site)',
     poster: zulluOsPoster,
     description:
-      'The XP-style portfolio you are inside right now: a boot screen, draggable windows, an xterm-powered terminal, a Winamp player, and a Merlin AI wizard assistant.',
+      'The XP-style portfolio you are inside right now: a boot screen, draggable windows, an xterm-powered terminal, and a Merlin AI wizard assistant.',
     technologies: 'React, TypeScript, Vite, clippyts, XP.css',
     repo: 'https://github.com/TheyloveShaka/zulluos-portfolio',
   },

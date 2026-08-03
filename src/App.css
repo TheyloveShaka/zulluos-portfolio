@@ -23,18 +23,52 @@ a:active {
   margin: 0;
 }
 
-:focus,
-:hover,
-:active {
+/* ------------------------------------------------------------------ */
+/* Keyboard focus visibility (WCAG 2.4.7 Focus Visible)                */
+/*                                                                     */
+/* :focus-visible is the browser's own heuristic for "was this element */
+/* focused by keyboard (or otherwise non-pointer) navigation" — it     */
+/* does NOT match a mouse click on a button/link, but it DOES match a  */
+/* click into a text input (sighted users benefit from seeing the      */
+/* caret land regardless of input method). That gives us exactly what  */
+/* we want: no ring on click, a clear ring on Tab.                     */
+/*                                                                     */
+/* Do not reintroduce a blanket `*:focus { outline: 0 !important }`    */
+/* here — the !important makes it impossible for any component to opt */
+/* back into a visible ring, which is the bug this replaces.           */
+/* ------------------------------------------------------------------ */
+:focus:not(:focus-visible) {
   outline: none;
 }
 
-*:focus {
-  outline: 0 !important;
+/* `html` in front is load-bearing, not decorative: plenty of components
+   in this file (.unstyledButton, .wrg-toggle, etc.) reset `outline` on
+   their own bare class selector. A bare `:focus-visible` here ties those
+   selectors on specificity (one class vs. one pseudo-class), and CSS
+   breaks ties by source order — so whichever rule happens to be *later*
+   in the file wins, silently swallowing the ring on anything defined
+   below this point. Adding the `html` type selector bumps this rule just
+   past that tier so it always wins on specificity instead of by luck of
+   file order. */
+html :focus-visible {
+  outline: 3px solid #7fa6e0;
+  outline-offset: 3px;
+  border-radius: 2px;
 }
 
-button {  outline: none;}
-button:hover {  outline: none;}
+/* The taskbar (.icon-task / .nav-socials, on the blue navbar) and the
+   window title-bar close button (.close-window, on the same blue
+   themeValues.window gradient) put the ring directly over a mid-blue
+   background close enough in hue/lightness to #7fa6e0 that the outline
+   alone drops under the ~3:1 contrast WCAG 1.4.11 asks for on non-text
+   UI indicators. Swap to a box-shadow ring with a dark halo behind it so
+   it reads regardless of where on the gradient it lands. */
+.icon-task :focus-visible,
+.nav-socials a:focus-visible,
+.close-window:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(5, 6, 10, 0.75), 0 0 0 5px #7fa6e0;
+}
 
 
 
@@ -845,7 +879,10 @@ body {
   outline: inherit;
 }
 
-.unstyledButton:focus {
+/* Only suppress the ring for mouse/touch focus; keyboard focus still
+   gets a visible ring from the global :focus-visible rule above (or the
+   blue-background override further up, for taskbar/close buttons). */
+.unstyledButton:focus:not(:focus-visible) {
   outline: none;
 }
 

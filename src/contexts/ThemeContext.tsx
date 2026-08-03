@@ -1,7 +1,7 @@
 import { createContext, useContext, ReactNode } from 'react'
 import xpWallpaper from '@assets/xpCompress.jpg'
 
-// ZulluOS ships the classic Windows XP look only. The upstream project had a
+// Shaka's Portfolio ships the classic Windows XP look only. The upstream project had a
 // second "dark"/neon theme; the type is kept as a single-member union so the
 // per-theme branches in Icon/IconTask still typecheck against a real value.
 type Theme = 'xp';
