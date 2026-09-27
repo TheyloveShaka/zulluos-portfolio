@@ -1,8 +1,8 @@
 <?xml version="1.0" standalone="no"?>
 <!-- Safari mask icon: must be a single-colour (black on transparent) silhouette.
-     Traced from the ZulluOS "Z" mark (src/img/zullu-icon.svg), scaled to a
+     Traced from the site's "S" mark (src/img/s-monogram.svg), scaled to a
      100x100 viewBox to match the other icon sources in this repo. -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <path d="M28 30 H72 L28 70 H72" fill="none" stroke="#000000" stroke-width="12"
+  <path d="M72 30 H28 V50 H72 V70 H28" fill="none" stroke="#000000" stroke-width="12"
         stroke-linecap="square" stroke-linejoin="miter"/>
 </svg>

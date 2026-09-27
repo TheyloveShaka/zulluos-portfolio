@@ -1,35 +1,30 @@
-# Shaka's Portfolio — Shaka Nathan K's Portfolio
+# Shaka's Portfolio
 
-Shaka's Portfolio is an interactive, Windows-XP-styled portfolio for **Shaka Nathan K**, a Developer & AI Engineer based in Kampala, Uganda. Instead of a static page, you switch it on: a retro PC sits on the welcome screen waiting for you to press its power button, and the machine boots into a full XP desktop with draggable windows, a working terminal, and a Merlin wizard assistant.
+An interactive, Windows XP styled portfolio for **Shaka Nathan K**, developer, AI engineer and project lead based in Kampala, Uganda. A short typed boot hands over to a scrolling XP desktop: About opens on arrival, case studies live in an Explorer folder with silent walkthrough videos, and Merlin waits in the corner until you click him.
 
 ## What it is
 
-- **Power on** — visitors are met by an illustrated CRT and tower with a clickable power button. Pressing it wakes the screen, draws the logo as a BIOS splash, runs the boot text, and lands on the desktop. A `fastboot` toggle skips it for repeat visitors.
-- **Draggable windows** — About, Projects, Credits, Resume, and Device Info all open as classic resizable/draggable XP-style windows.
-- **Terminal** — a real in-browser shell (`xterm.js` + `@zenfs/core`) with commands like `help`, `ls`, `neofetch`, `whoami`, `skills`, and `socials`.
-- **Merlin** — a clippy-style wizard assistant that pops in to help visitors get oriented.
+- **Boot**: about 0.9s of typed diagnostics, then the desktop. Esc or Enter skips it, and `fastboot` or reduced motion goes straight to the desktop.
+- **Desktop**: files on the left, a photo and a sticky note top-right, a skills orbit below the fold. The taskbar and wallpaper stay fixed while the desktop scrolls.
+- **Windows**: About, Case Studies, the case study viewer, Hire Me, My Approach.txt, Terminal, Device and Credits, all sharing one XP Luna window shell.
+- **Terminal**: an in-browser shell (`xterm.js` plus `@zenfs/core`) with `help`, `ls`, `neofetch`, `whoami`, `skills` and `socials`.
+- **Merlin**: a clippyts assistant with a docked chat window and its own taskbar button.
 
 ## Tech stack
 
-- React 18 + TypeScript
-- Vite (build tool, dev server)
-- Framer Motion (animations)
-- xterm.js + @zenfs/core (in-browser terminal & virtual filesystem)
-- clippyts (Merlin assistant)
-- xp.css (Windows XP visual chrome)
-- Tailwind CSS
+React 18, TypeScript, Vite 5, Tailwind 3, framer-motion 10, react-draggable, react-icons, simple-icons, windups, xterm.js, @zenfs/core, clippyts, and @fontsource for Fira Sans, Fira Mono, Bricolage Grotesque and Caveat.
 
 ## Documentation
 
-See **[DOCUMENTATION.md](DOCUMENTATION.md)** for the architecture guide (boot flow, window system, Merlin's brain, theming), a content-editing cheat-sheet, deployment notes, and the future-work roadmap.
+See **[DOCUMENTATION.md](DOCUMENTATION.md)** for the architecture, where to edit copy and data, the video and QA scripts, and the open ASK list.
 
 ## Development
 
 ```bash
-npm run dev       # start the Vite dev server
-npm run build     # type-check and build for production
-npm run preview   # preview the production build locally
-npm run lint      # run ESLint
+npm run dev       # Vite dev server on port 3000
+npm run build     # production build into dist/
+npm run preview   # preview the production build
+npm run lint      # ESLint
 ```
 
 ## Deploy
@@ -40,12 +35,8 @@ npm run deploy    # builds and publishes dist/ via gh-pages
 
 ## Credits
 
-Shaka's Portfolio is **forked and adapted from [kisimoff.com](https://kisimoff.com)**, the original open-source portfolio created by **Valentin Kisimov** — see the source at [github.com/kisimoff/portfolio](https://github.com/kisimoff/portfolio). The overall concept, the Windows-XP-style window system, the boot sequence, and the terminal all originate from his work. Huge thanks to Valentin for open-sourcing such a polished project.
+Forked and adapted from **[kisimoff.com](https://kisimoff.com)** by **Valentin Kisimov** ([source](https://github.com/kisimoff/portfolio)). The OS-as-portfolio concept, the window system, the boot sequence and the terminal all start from his work. Thank you, Valentin.
 
-Additional credits carried over from the original project:
-
-- **Logo & CPU Portal animation** — [Valentin Ivanov](https://www.hivaldesign.com/), an RSA Award-winning animation. Watch it [here](https://www.youtube.com/watch?v=6k12O1iADwc).
-- **Inspiration** — the OS-as-portfolio concept was inspired by [Poolside FM](https://poolsuite.net/).
-- **Merlin assistant** — powered by [clippy-js](https://github.com/pi0/clippy.js) / [clippyts](https://www.npmjs.com/package/clippyts).
-- **Windows XP look & feel** — [xp.css](https://github.com/botoxparty/XP.css).
-- Libraries: [Xterm.js](https://xtermjs.org/), [ZenFS](https://zenfs.dev/core/), [react-device-detect](https://www.npmjs.com/package/react-device-detect), [react-draggable](https://www.npmjs.com/package/react-draggable), [react-ip-details](https://www.npmjs.com/package/react-ip-details), [framer-motion](https://www.npmjs.com/package/framer-motion).
+- **Inspiration**: the OS-as-portfolio idea traces back to [Poolside FM](https://poolsuite.net/).
+- **Merlin**: [clippy.js](https://github.com/pi0/clippy.js) via [clippyts](https://www.npmjs.com/package/clippyts).
+- **Libraries**: [Xterm.js](https://xtermjs.org/), [ZenFS](https://zenfs.dev/core/), [react-draggable](https://www.npmjs.com/package/react-draggable), [framer-motion](https://www.npmjs.com/package/framer-motion), [simple-icons](https://simpleicons.org/).

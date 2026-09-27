@@ -1,13 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" role="img" aria-label="ZulluOS icon">
-  <!-- Small-size variant of the ZulluOS mark: the orbital ring is dropped and
-       the Z reversed out of a solid badge so it stays legible at 16px. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" role="img" aria-label="Shaka's Portfolio icon">
+  <!-- The site's mark: a blocky "S" (same three-bar, offset-connector
+       construction as a seven-segment "5"/"S") reversed out of a rounded
+       Luna-blue tile, matching the "Z" mark's construction it replaces so
+       it stays crisp and legible down to 16px.
+       Fill colours are the exact hex values of the luna-500 and luna-900
+       custom properties from src/styles/tokens.css: this file is rasterised by
+       scripts/generate-icons.ts outside any browser/CSS context, so the
+       tokens are inlined by value rather than referenced by var(). -->
   <defs>
-    <linearGradient id="zulluIconBg" x1="10" y1="10" x2="90" y2="90" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#2f71cd"/>
-      <stop offset="1" stop-color="#0a2a5e"/>
+    <linearGradient id="sMonogramBg" x1="10" y1="10" x2="90" y2="90" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#2F71CD"/>
+      <stop offset="1" stop-color="#0A246A"/>
     </linearGradient>
   </defs>
-  <rect width="100" height="100" rx="20" fill="url(#zulluIconBg)"/>
-  <path d="M28 30 H72 L28 70 H72" fill="none" stroke="#fff" stroke-width="12"
+  <rect width="100" height="100" rx="20" fill="url(#sMonogramBg)"/>
+  <path d="M72 30 H28 V50 H72 V70 H28" fill="none" stroke="#fff" stroke-width="12"
         stroke-linecap="square" stroke-linejoin="miter"/>
 </svg>

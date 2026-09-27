@@ -1,74 +1,55 @@
 import { motion } from 'framer-motion'
 import { SlSocialLinkedin } from 'react-icons/sl'
 import { VscGithubAlt } from 'react-icons/vsc'
-import { IoLogoGitlab } from 'react-icons/io5'
+import { FaInstagram, FaWhatsapp } from 'react-icons/fa'
+import type { IconType } from 'react-icons'
 import IconTask from './IconTask'
-import {
-  isTablet,
-} from 'react-device-detect'
 import { useTheme } from '@contexts/ThemeContext'
 import { useAnimations } from '@contexts/AnimationsContext'
 import { useWindows } from '@contexts/WindowsContext'
+import { profile } from '@/data/profile'
+import { durMicro, easeOut } from '@/styles/motion'
+
+const socials: { label: string; href?: string; Icon: IconType }[] = [
+  { label: 'LinkedIn', href: profile.linkedinUrl, Icon: SlSocialLinkedin },
+  { label: 'GitHub', href: profile.githubUrl, Icon: VscGithubAlt },
+  { label: 'Instagram', href: profile.instagramUrl, Icon: FaInstagram },
+  { label: 'WhatsApp', href: profile.whatsappUrl, Icon: FaWhatsapp },
+]
 
 function Navbar() {
   const { themeValues } = useTheme()
-  const { navbarAnimation } = useAnimations()
+  const { desktopRevealed, revealTransition } = useAnimations()
   const { windows } = useWindows()
 
   return (
     <motion.div
       className="navbar"
-      animate={navbarAnimation}
+      animate={desktopRevealed ? { opacity: 1, transition: revealTransition } : undefined}
       style={themeValues.navbar}
       initial={{ opacity: 0 }}
-
     >
-      <div className="nav-heading">
-        <span style={isTablet ? { width: '350px' } : undefined}>
-          Shaka's Portfolio
-        </span>
-      </div>
-      <div
-        className="nav-icon-task"
-        style={isTablet ? { display: 'none' } : undefined}
-      >
-        {Object.entries(windows).map(([key, window]) => (
-          window.visibility && (<IconTask key={key} window={window} />)
-        ))}
+      <div className="nav-heading">Shaka's Portfolio</div>
+      <div className="nav-icon-task">
+        {Object.entries(windows).map(([key, win]) => win.visibility && <IconTask key={key} window={win} />)}
       </div>
       <div className="nav-socials">
-        <motion.a
-          href="#"
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={() => {
-            // TODO: add real handle
-            window.open('#')
-          }}
-        >
-          <SlSocialLinkedin className="nav-social-svg" />
-        </motion.a>
-        <motion.a
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          href="#"
-          onClick={() => {
-            window.open('https://github.com/TheyloveShaka')
-          }}
-        >
-          <VscGithubAlt className="nav-social-svg" />
-        </motion.a>
-        <motion.a
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          href="#"
-          onClick={() => {
-            // TODO: add real handle
-            window.open('#')
-          }}
-        >
-          <IoLogoGitlab className="nav-social-svg" />
-        </motion.a>
+        {socials.map(({ label, href, Icon }) =>
+          href ? (
+            <motion.a
+              key={label}
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={label}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              transition={{ duration: durMicro / 1000, ease: easeOut }}
+            >
+              <Icon className="nav-social-svg" aria-hidden="true" />
+            </motion.a>
+          ) : null,
+        )}
       </div>
     </motion.div>
   )

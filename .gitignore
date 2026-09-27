@@ -25,3 +25,7 @@ dist-ssr
 
 # stale upstream build output
 build
+
+scripts/astra/.astra-*-id
+docs/shots/
+scripts/media/.raw/

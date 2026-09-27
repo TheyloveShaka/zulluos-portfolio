@@ -1,46 +1,14 @@
-import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react'
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import clippy, { Agent } from 'clippyts'
 
 import WizardChat from './WizardChat'
+import { useWindows } from '@contexts/WindowsContext'
+import { durDevelop, durMinimise, prefersReducedMotion, staggerIcon, staggerObject } from '@/styles/motion'
 import './wizard.css'
 
-const GREETING = 'Welcome to Shaka\'s Portfolio! Click me if you need help.'
-
-type PanelState = 'closed' | 'open' | 'minimized'
-
-/**
- * The site opens on a welcome/power-on screen (PowerOnScreen.tsx) that
- * waits — indefinitely — for the visitor to click the power button. Only
- * once that happens does LoadingScreen.tsx run the rest of the boot
- * sequence: CRT wake -> logo splash -> BIOS boot text -> desktop. Whichever
- * path gets there (a real boot, or fastboot skipping straight to the
- * desktop), LoadingScreen stamps `document.body.dataset.introDone = 'true'`
- * and dispatches a `zulluos:intro-complete` window event the moment the
- * desktop is actually visible. We wait for that signal before loading
- * Merlin so he doesn't pop in on top of the boot sequence — popping in
- * mid-boot was the exact bug this replaced (Merlin used to key off
- * `#bootRoot` being hidden, which happened before the boot sequence even
- * started).
- *
- * There's a second, easy-to-miss signal too: `zulluos:intro-start` (the
- * event name is a leftover internal identifier from this project's former
- * name — it's not shown to visitors, so it's left as-is) /
- * `document.body.dataset.introStarted`, stamped the instant the visitor
- * actually powers the machine on (LoadingScreen's handlePowerOn, fired by
- * PowerOnScreen's onPowerOn callback once the power-on animation has
- * played out). The safety-net timeout below is armed only once *that*
- * fires — arming it from this hook's own mount (≈ page load) instead was a
- * real bug: the welcome screen has no time limit (a visitor can sit on it,
- * or tab away, for as long as they like), so a page-load-relative timer
- * trivially fired *before* the user even clicked the power button, popping
- * Merlin in on top of the still-off welcome screen. Gating the timer on
- * intro-start makes it mean what it's supposed to mean: "boot itself is
- * taking suspiciously long," not "it's been a while since the page
- * loaded." Fastboot never dispatches intro-start (it jumps straight to
- * intro-complete), so it's unaffected by any of this.
- */
-const INTRO_START_EVENT = 'zulluos:intro-start'
-const INTRO_COMPLETE_EVENT = 'zulluos:intro-complete'
+const INTRO_START_EVENT = 'portfolio:intro-start'
+const INTRO_COMPLETE_EVENT = 'portfolio:intro-complete'
+const MERLIN_EVENT = 'portfolio:open-merlin'
 const INTRO_SAFETY_NET_MS = 20000
 
 const useDesktopReady = (): boolean => {
@@ -64,8 +32,6 @@ const useDesktopReady = (): boolean => {
       safetyTimer = window.setTimeout(() => setReady(true), INTRO_SAFETY_NET_MS)
     }
 
-    // Covers the case where the intro was already underway before this
-    // effect's listeners attached (e.g. a fast remount).
     if (isStarted()) armSafetyNet()
 
     const onIntroStart = () => armSafetyNet()
@@ -73,8 +39,6 @@ const useDesktopReady = (): boolean => {
     window.addEventListener(INTRO_START_EVENT, onIntroStart)
     window.addEventListener(INTRO_COMPLETE_EVENT, onIntroComplete)
 
-    // Belt-and-suspenders poll for both signals, plus the safety net above,
-    // so Merlin can never be permanently lost if an event is missed.
     const interval = window.setInterval(() => {
       if (isDone()) {
         setReady(true)
@@ -94,37 +58,83 @@ const useDesktopReady = (): boolean => {
   return ready
 }
 
-// A handful of evenly-spaced sparkle particles for Merlin's entrance poof.
 const SPARKLE_PARTICLES = Array.from({ length: 7 }, (_, i) => ({
   angle: (360 / 7) * i,
-  delay: Math.round((i % 3) * 45),
+  delay: (i % 3) * staggerIcon,
 }))
 
-// Roughly matches the sprite box agent.moveTo() below targets, so the
-// sparkle burst lands centred on Merlin rather than at his corner anchor.
 const merlinSparklePosition = () => ({
   x: window.innerWidth - 100,
   y: window.innerHeight - 120,
 })
 
+type MerlinLifecycle = 'idle' | 'opening' | 'open' | 'closing'
+
+const CLICK_DISTANCE_THRESHOLD_PX = 4
+
+const clampSprite = (el: HTMLElement) => {
+  const root = getComputedStyle(document.documentElement)
+  const margin = parseFloat(root.getPropertyValue('--sp-2')) || 8
+  const taskbar = parseFloat(root.getPropertyValue('--taskbar-h')) || 40
+  const rect = el.getBoundingClientRect()
+  if (!rect.width) return
+  const maxRight = window.innerWidth - margin
+  const maxBottom = window.innerHeight - taskbar - margin
+  let dx = 0
+  let dy = 0
+  if (rect.right > maxRight) dx = maxRight - rect.right
+  if (rect.left + dx < margin) dx = margin - rect.left
+  if (rect.bottom > maxBottom) dy = maxBottom - rect.bottom
+  if (rect.top + dy < margin) dy = margin - rect.top
+  if (!dx && !dy) return
+  const style = getComputedStyle(el)
+  el.style.left = `${parseFloat(style.left) + dx}px`
+  el.style.top = `${parseFloat(style.top) + dy}px`
+}
+
 const Wizard = () => {
   const desktopReady = useDesktopReady()
-  const [panel, setPanel] = useState<PanelState>('closed')
+  const { windows, openOrFocusWindow } = useWindows()
+  const chatOpen = windows.merlinChat.visibility
+  const [lifecycle, setLifecycle] = useState<MerlinLifecycle>('idle')
   const [sparkle, setSparkle] = useState<{ x: number; y: number } | null>(null)
   const agentRef = useRef<Agent | null>(null)
   const loadStartedRef = useRef(false)
-  const idleIntervalRef = useRef<number>()
   const sparkleTimeoutRef = useRef<number>()
+  const lifecycleTimeoutRef = useRef<number>()
+  const skipFirstLifecycleSyncRef = useRef(true)
+  const mouseDownPointRef = useRef<{ x: number; y: number } | null>(null)
+  const openOrFocusWindowRef = useRef(openOrFocusWindow)
+  useEffect(() => {
+    openOrFocusWindowRef.current = openOrFocusWindow
+  }, [openOrFocusWindow])
+
+  useEffect(() => {
+    if (skipFirstLifecycleSyncRef.current) {
+      skipFirstLifecycleSyncRef.current = false
+      return undefined
+    }
+    const duration = prefersReducedMotion() ? 0 : durMinimise
+    setLifecycle(chatOpen ? 'opening' : 'closing')
+    lifecycleTimeoutRef.current = window.setTimeout(() => {
+      setLifecycle(chatOpen ? 'open' : 'idle')
+    }, duration)
+    return () => {
+      if (lifecycleTimeoutRef.current) window.clearTimeout(lifecycleTimeoutRef.current)
+    }
+  }, [chatOpen])
 
   useEffect(() => {
     if (!desktopReady || loadStartedRef.current) return undefined
 
-    // Guard against React StrictMode double-invoking effects (and Vite HMR
-    // remounts): clippyts appends a raw `.clippy` div straight to
-    // document.body, outside React's tree, so React won't dedupe it for us.
     if (document.querySelector('.clippy')) return undefined
 
     loadStartedRef.current = true
+
+    let mouseDownHandler: ((e: MouseEvent) => void) | undefined
+    let clickHandler: ((e: MouseEvent) => void) | undefined
+    let settle: (() => void) | undefined
+    let el: HTMLElement | null = null
 
     clippy.load({
       name: 'Merlin',
@@ -133,48 +143,60 @@ const Wizard = () => {
         agent.show(true)
         agent.moveTo(window.innerWidth - 150, window.innerHeight - 170, 0)
 
-        // Brief sparkle/poof flourish as he lands, then his usual greet.
         setSparkle(merlinSparklePosition())
-        sparkleTimeoutRef.current = window.setTimeout(() => setSparkle(null), 700)
+        sparkleTimeoutRef.current = window.setTimeout(() => setSparkle(null), durDevelop + staggerObject * 2)
 
-        agent.play('Greet')
-
-        window.setTimeout(() => {
-          agent.speak(GREETING, false)
-        }, 800)
-
-        const el = document.querySelector('.clippy') as HTMLElement | null
+        el = document.querySelector('.clippy') as HTMLElement | null
         if (el) {
-          el.style.zIndex = '2147483000'
+          el.style.zIndex = '4'
           el.setAttribute('role', 'button')
           el.setAttribute('aria-label', 'Ask Merlin')
-          el.addEventListener('click', () => {
-            setPanel((prev) => (prev === 'open' ? 'closed' : 'open'))
-          })
-        }
 
-        const scheduleIdle = () => {
-          idleIntervalRef.current = window.setTimeout(() => {
-            if (!document.hidden) agent.animate()
-            scheduleIdle()
-          }, 22000 + Math.random() * 18000)
+          mouseDownHandler = (e: MouseEvent) => {
+            mouseDownPointRef.current = { x: e.clientX, y: e.clientY }
+          }
+          clickHandler = (e: MouseEvent) => {
+            const start = mouseDownPointRef.current
+            mouseDownPointRef.current = null
+            if (!start) return
+            const distance = Math.hypot(e.clientX - start.x, e.clientY - start.y)
+            if (distance >= CLICK_DISTANCE_THRESHOLD_PX) return
+            openOrFocusWindowRef.current('merlinChat')
+          }
+          el.addEventListener('mousedown', mouseDownHandler)
+          el.addEventListener('click', clickHandler)
+
+          const sprite = el
+          settle = () => window.requestAnimationFrame(() => clampSprite(sprite))
+          settle()
+          window.addEventListener('resize', settle)
+          window.addEventListener('mouseup', settle)
+          window.addEventListener('touchend', settle)
         }
-        scheduleIdle()
       },
       failCb: (error) => {
-
         console.error('Merlin failed to load', error)
       },
     })
 
-    return () => {
-      if (idleIntervalRef.current) window.clearTimeout(idleIntervalRef.current)
-      if (sparkleTimeoutRef.current) window.clearTimeout(sparkleTimeoutRef.current)
-    }
-  }, [desktopReady])
+    const handleMerlinEvent = () => openOrFocusWindowRef.current('merlinChat')
+    window.addEventListener(MERLIN_EVENT, handleMerlinEvent)
 
-  const closeChat = useCallback(() => setPanel('closed'), [])
-  const minimizeChat = useCallback(() => setPanel('minimized'), [])
+    return () => {
+      if (sparkleTimeoutRef.current) window.clearTimeout(sparkleTimeoutRef.current)
+      window.removeEventListener(MERLIN_EVENT, handleMerlinEvent)
+      if (settle) {
+        window.removeEventListener('resize', settle)
+        window.removeEventListener('mouseup', settle)
+        window.removeEventListener('touchend', settle)
+      }
+      if (el) {
+        if (mouseDownHandler) el.removeEventListener('mousedown', mouseDownHandler)
+        if (clickHandler) el.removeEventListener('click', clickHandler)
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [desktopReady])
 
   if (!desktopReady) return null
 
@@ -183,15 +205,7 @@ const Wizard = () => {
       {sparkle && (
         <div
           className="wizard-sparkle"
-          style={{
-            position: 'fixed',
-            left: sparkle.x,
-            top: sparkle.y,
-            width: 0,
-            height: 0,
-            zIndex: 2147483000,
-            pointerEvents: 'none',
-          }}
+          style={{ left: sparkle.x, top: sparkle.y }}
         >
           {SPARKLE_PARTICLES.map((p) => (
             <span
@@ -236,9 +250,11 @@ const Wizard = () => {
           `}</style>
         </div>
       )}
-      {panel === 'open' ? (
-        <WizardChat agentRef={agentRef} onClose={closeChat} onMinimize={minimizeChat} />
-      ) : null}
+      {(chatOpen || lifecycle === 'closing') && (
+        <div data-merlin-lifecycle={lifecycle}>
+          <WizardChat agentRef={agentRef} />
+        </div>
+      )}
     </>
   )
 }

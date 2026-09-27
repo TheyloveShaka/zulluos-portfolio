@@ -1,93 +1,73 @@
-import { createContext, useContext, ReactNode } from 'react'
+import { createContext, useContext, ReactNode, type CSSProperties } from 'react'
 import xpWallpaper from '@assets/xpCompress.jpg'
 
-// Shaka's Portfolio ships the classic Windows XP look only. The upstream project had a
-// second "dark"/neon theme; the type is kept as a single-member union so the
-// per-theme branches in Icon/IconTask still typecheck against a real value.
-type Theme = 'xp';
-
-// Define the theme values
 const xpTheme = {
   app: {
     backgroundImage: `url(${xpWallpaper})`,
     backgroundSize: 'cover',
-    // transition: "none",
   },
   button: {
     WebkitFontSmoothing: 'antialiased',
     boxSizing: 'border-box',
-    border: '1px solid #003c74',
-    background: 'linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(236, 235, 229, 1) 86%, rgba(216, 208, 196, 1) 100%)',
+    border: '1px solid var(--xp-btn-border)',
+    background: 'var(--xp-btn-face)',
     boxShadow: 'none',
-    borderRadius: '3px',
+    borderRadius: 'var(--radius-control)',
   },
   window: {
-    // background: "rgb(19,60,156)",
-    background:
-      'linear-gradient(0deg, rgba(0,59,214,1) 2%, rgba(0,102,253,1) 15%, rgba(0,100,253,1) 20%, rgba(0,88,230,1) 85%, rgba(54,143,252,1) 95%, rgba(13,96,232,1) 98%)',
-    color: '#E3E3E3',
-    borderTopRightRadius: '8px',
-    borderTopLeftRadius: '8px',
-    transition: 'all 0.5s ease-in',
-    fontFamily: 'Trebuchet, sans-serif',
-    fontWeight: '600',
-    textShadow: '1px 1px #0f1089',
-    boxShadow: 'inset 0px 0px 0px 1px rgba(0, 0, 0, 0.2)',
+    background: 'var(--xp-title-active)',
+    color: 'var(--n-0)',
+    borderRadius: 'var(--radius-window)',
+    fontFamily: 'var(--font-ui)',
+    fontWeight: 'var(--fw-bold)',
+    fontSize: 'var(--fs-chrome)',
+    textShadow: 'var(--text-shadow-title)',
     boxSizing: 'border-box',
   },
-  iconTask: {
-    // backgroundColor: "#ffffff",
-    paddingRight: '1rem',
-    borderBottom: 'none',
-    borderRadius: '4px',
-    fontFamily: 'Trebuchet, sans-serif',
-    boxShadow: '1px 2px 2px #33333375',
-    borderLeft: '1px solid rgba(146, 165, 187, 0.56)',
-    background:
-      'linear-gradient(0deg, rgba(97,167,240,1) 0%, rgba(48,137,241,1) 6%, rgba(48,137,241,1) 93%, rgba(52,135,241,1) 97%, rgba(97,167,240,1) 100%)',
-  },
-  iconTaskCaption: {
-    paddingRight: '1.5rem',
-    fontSize: '1.1rem',
+  windowInactive: {
+    background: 'var(--xp-title-inactive)',
+    color: 'var(--n-0)',
+    borderRadius: 'var(--radius-window)',
+    fontFamily: 'var(--font-ui)',
+    fontWeight: 'var(--fw-bold)',
+    fontSize: 'var(--fs-chrome)',
+    textShadow: 'var(--text-shadow-title)',
+    boxSizing: 'border-box',
   },
   field: {
-    backgroundColor: '#E3E3E3',
-    color: '#474554',
+    backgroundColor: 'var(--surface-window)',
+    color: 'var(--ink-2)',
     marginTop: '-2px',
-    fontWeight: 'normal',
-    boxShadow: '0 2px 5px #33333375',
+    fontWeight: 'var(--fw-regular)',
     boxSizing: 'border-box',
-    borderRight: '4px solid #003bd6',
-    borderBottom: '4px solid #003bd6',
-    borderLeft: '4px solid #003bd6',
-    transition: 'all 0.5s ',
+    borderRight: 'var(--frame-w) solid var(--xp-frame)',
+    borderBottom: 'var(--frame-w) solid var(--xp-frame)',
+    borderLeft: 'var(--frame-w) solid var(--xp-frame)',
   },
-  // cursor: { animation: "1.02s blink-light step-end infinite" },
   closeBtn: {
-    color: 'white',
-    backgroundColor: '#ee6247',
-    margin: '0.4rem',
-    border: '2px solid #ffffff85',
-    borderRadius: '4px',
-    fontSize: '1.6rem',
-    padding: '0.05rem',
-    transition: 'all 0.8s ease-in',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    textAlign: 'center',
-    fontWeight: 900,
+    width: 'var(--hit-min)',
+    height: 'var(--hit-min)',
+    margin: '0 var(--sp-1)',
+  },
+  closeBtnGlyph: {
+    color: 'var(--ink-on-color)',
+    backgroundColor: 'var(--xp-close)',
+    border: '1px solid var(--n-0)',
+    borderRadius: 'var(--radius-control)',
+    boxShadow: 'var(--shadow-btn-highlight)',
+    width: 'var(--title-ctl)',
+    height: 'var(--title-ctl)',
+    fontSize: 'var(--fs-meta)',
+    fontWeight: 'var(--fw-bold)',
+    transition: 'background-color var(--dur-micro) var(--ease-out)',
   },
   navbar: {
-    background:
-      'linear-gradient(0deg, rgba(23,65,163,1) 0%, rgba(34,88,214,1) 9%, rgba(35,99,223,1) 22%, rgba(34,88,214,1) 82%, rgba(54,120,206,1) 93%, rgba(34,88,214,1) 100%)',
-    transition: 'all 1.5s ease',
+    background: 'var(--xp-taskbar)',
   },
-}
+} satisfies Record<string, CSSProperties>
 
 interface ThemeContextType {
-  themeState: Theme;
-  themeValues: any
+  themeValues: typeof xpTheme
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
@@ -97,10 +77,8 @@ interface ThemeProviderProps {
 }
 
 export const ThemeProvider = ({ children }: ThemeProviderProps) => {
-  const theme: Theme = 'xp'
-
   return (
-    <ThemeContext.Provider value={{ themeState: theme, themeValues: xpTheme }}>
+    <ThemeContext.Provider value={{ themeValues: xpTheme }}>
       {children}
     </ThemeContext.Provider>
   )

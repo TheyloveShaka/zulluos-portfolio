@@ -21,7 +21,7 @@ const Start = () => {
   }
   return (
     <Window window={startWindow}>
-      <div className="startText">
+      <div className="window-text">
         <WindupChildren
           onFinished={handleFinish}
         >
@@ -36,7 +36,7 @@ const Start = () => {
             </p>
           </Pace>
           <Pause ms={1000} />
-          <p className="start-text">
+          <p>
             <br></br>
 
             <Pace ms={32}>
@@ -85,14 +85,3 @@ const Start = () => {
 
 export default Start
 
-// Hello, friend
-
-// Welcome to Shaka's Portfolio.
-
-// Here, you'll find a Terminal, where commands are king.
-
-// Projects, where the code speaks for itself.
-
-// And if you're curious about the man behind the keyboard, just click the About icon.
-
-// Welcome to my world.

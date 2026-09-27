@@ -1,25 +1,37 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
 import path from 'path'
+import { FontaineTransform } from 'fontaine'
 
+const FALLBACK_NAME_MAP: Record<string, string> = {
+  'Fira Sans': 'Fira Sans Fallback',
+  'Bricolage Grotesque Variable': 'Bricolage Fallback',
+  'Caveat Variable': 'Caveat Fallback',
+  'Fira Mono': 'Fira Mono Fallback',
+}
 
 export default defineConfig({
   base: '/',
   build: {
-    target: 'esnext', // or 'es2022'
+    target: 'esnext',
   },
   server: {
-    host: true, // Expose the server on your local network
-    port: 3000, // Optional: Specify a custom port (default is 5173)
+    host: true,
+    port: 3000,
   },
-  plugins: [react()],
+  plugins: [
+    react(),
+    FontaineTransform.vite({
+      fallbacks: {
+        'Fira Sans': ['Arial'],
+        'Bricolage Grotesque Variable': ['Arial'],
+        'Caveat Variable': ['Arial'],
+        'Fira Mono': ['Courier New'],
+      },
+      fallbackName: (name) => FALLBACK_NAME_MAP[name] ?? `${name} Fallback`,
+    }),
+  ],
   optimizeDeps: {
-    // clippyts (Merlin wizard) loads its per-agent sprite data via a
-    // runtime `import(\`./agents/${name}.js\`)`. esbuild's dep pre-bundler
-    // can't statically resolve that expression, so leaving clippyts
-    // pre-bundled makes dev-mode fetch the agent chunk from the wrong URL.
-    // Excluding it keeps the package served as real files, so the relative
-    // import resolves against its actual on-disk location.
     exclude: ['clippyts'],
   },
   resolve: {

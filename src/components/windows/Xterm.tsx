@@ -1,4 +1,3 @@
-// src/components/windows/Xterm.tsx
 import React, { useEffect, useRef } from 'react'
 import Window from '@components/windows/Window'
 import { Terminal } from 'xterm'
@@ -7,9 +6,6 @@ import 'xterm/css/xterm.css'
 import { useWindows } from '@contexts/WindowsContext'
 import { processCommand, config, getPrompt } from '@/utils/terminalCommandProcessor'
 import { isMobile } from 'react-device-detect'
-
-// Make them configurable and save them in a file like bashrc or something this could
-// potentiallye evolve to a settings menu.
 
 const TerminalWindow = () => {
   const { terminalWindow } = useWindows()
@@ -38,25 +34,25 @@ const TerminalWindow = () => {
     }
   }
 
-  let inputBuffer = '' // Track user input
+  let inputBuffer = ''
 
   const handleTerminalData = (data: string) => {
-    if (data === '\r') { // Enter key
+    if (data === '\r') {
       const command = inputBuffer
       terminal.current?.write('\r\n')
       if (terminal.current) {
         processCommand(command, terminal.current)
       }
-      inputBuffer = '' // Clear buffer after processing
+      inputBuffer = ''
       terminal.current?.write(getPrompt())
-    } else if (data === '\x7f') { // Backspace key
+    } else if (data === '\x7f') {
       if (inputBuffer.length > 0) {
-        inputBuffer = inputBuffer.slice(0, -1) // Remove last character
+        inputBuffer = inputBuffer.slice(0, -1)
         terminal.current?.write('\b \b')
       }
     } else {
-      inputBuffer += data // Add typed character to the buffer
-      terminal.current?.write(data) // Display in terminal
+      inputBuffer += data
+      terminal.current?.write(data)
     }
   }
 

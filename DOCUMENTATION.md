@@ -1,158 +1,115 @@
-# Shaka's Portfolio — Documentation
+# Shaka's Portfolio: technical documentation
 
-Technical documentation for [Shaka's Portfolio](README.md), the Windows-XP-style portfolio of **Shaka Nathan K**. This covers how the app is put together, where the content lives, how to customize it, and what's planned next.
+A Windows XP Luna desktop, rebuilt as a portfolio. Vite 5, React 18, TypeScript, Tailwind 3, framer-motion 10. Dev server: `npm run dev` on port 3000.
 
-> Adapted from [Valentin Kisimov's open-source portfolio](https://github.com/kisimoff/portfolio) — see [Credits](README.md#credits).
+## 1. Architecture
 
----
+### Entry
 
-## 1. Project structure
+`index.html` loads `src/main.tsx`, which imports the fonts, `styles/tokens.css`, `index.css`, `styles/decor.css` and `styles/content-windows.css`, then mounts the providers (Client, Animations, Theme, Windows) around `App.tsx`.
 
-```
-src/
-├── App.tsx                    # Root component: desktop icons + all windows + Merlin
-├── App.css                    # Global styles, theme colors, desktop layout
-├── components/
-│   ├── Navbar.tsx             # Bottom taskbar: wordmark, theme toggle, socials
-│   ├── Icon.tsx / IconTask.tsx# Desktop icons and taskbar entries
-│   ├── logoBootAnimation.tsx  # LogoSplash: stroke-draws the Z mark (BIOS splash)
-│   ├── screens/
-│   │   ├── PowerOnScreen.tsx  # Welcome screen: SVG PC + clickable power button
-│   │   ├── LoadingScreen.tsx  # Boot state machine: welcome → logo → bios → done
-│   │   └── Desktop.tsx
-│   ├── windows/               # Each XP window: About, Projects, Credits, Start,
-│   │   │                      # DeviceInfo, Xterm (terminal)
-│   │   └── Window.tsx         # Shared draggable-window wrapper
-│   └── wizard/                # Merlin assistant (see §5)
-│       ├── Wizard.tsx         # Loads the clippyts Merlin agent, gates on boot
-│       ├── WizardChat.tsx     # "Ask Merlin" XP chat window
-│       ├── wizardBrain.ts     # Scripted intent-matching engine (the "AI")
-│       └── wizard.css         # XP.css chrome scoped under .wizard-chat
-├── contexts/                  # WindowsContext (open/close/focus windows),
-│                              # ThemeContext (dark ↔ XP Bliss), AnimationsContext
-├── data/
-│   └── projects.ts            # ← Single source of truth for project cards
-├── utils/
-│   ├── terminalCommandProcessor.ts  # Terminal commands (help, whoami, skills…)
-│   └── zenFs.ts               # In-browser virtual filesystem (ZenFS)
-└── assets/, img/              # Posters, icons, avatar
-public/
-└── assets/agents/Merlin.js    # Merlin sprite data (see §5, "the Vite gotcha")
-```
+### Boot
 
-## 2. Boot flow
+`components/screens/LoadingScreen.tsx` types about 0.9s of diagnostics with `windups`, then hands over to the desktop. A skip control is live from the first frame (Esc or Enter). The `fastboot` flag (stored through `utils/zenFs.ts`) and `prefers-reduced-motion` both go straight to the desktop. The hand-off follows `bootHandoff` in `styles/motion.ts`: the taskbar and icons reveal, then About opens and takes focus. The boot sets `data-intro-started` and `data-intro-done` on `<body>` and fires matching window events. Merlin waits for them.
 
-The boot sequence *is* the site's intro — there is no separate intro animation. `LoadingScreen.tsx` is a small state machine: `welcome → logo → bios → done`.
+### Scroll shell
 
-1. **`welcome`** — `PowerOnScreen.tsx` renders a full-screen SVG illustration of a CRT monitor and tower, powered down, with the site's wordmark, Shaka's name and title, and a **clickable power button** (a real `<button>`, keyboard reachable). This screen waits indefinitely for a human — nothing is on a timer here, which matters for the Merlin gating below.
-2. Pressing power plays the CRT wake (the bright line snapping open vertically, with a flicker), fires `signalIntroStart()`, and advances to…
-3. **`logo`** — `LogoSplash` (`logoBootAnimation.tsx`) stroke-draws the Z mark as an OEM/BIOS splash (~1.7s), then advances to…
-4. **`bios`** — the BIOS-style text sequence (`#bootRoot`) types out, then hands off: taskbar and icons animate in, the Start window opens, and `signalIntroComplete()` fires.
-5. **`done`** — the XP desktop, live.
+`App.tsx` renders a fixed `.wallpaper-layer`, a fixed taskbar, and `#app`, a document-height canvas that scrolls. Its `min-height` is recomputed from the lowest `[data-window-root]`, `.icons` and `.orbit-band`, plus `--taskbar-h` and `--sp-6`, whenever a window opens or moves.
 
-`fastBoot` short-circuits straight to `done` (no welcome screen, no BIOS text) for repeat visitors. Toggle it with `fastboot on` / `fastboot off` in the site's terminal; the flag persists in ZenFS (IndexedDB), so clearing it during development means deleting the `zenfs` IndexedDB database — and note that `indexedDB.deleteDatabase` silently *blocks* while the page holds a connection, so the delete only lands after a reload.
+### Windows
 
-### The two boot signals
+- `contexts/WindowsContext.tsx` owns the `WindowKey` union, the open queue (last entry is focused, order sets z-index), icon positions and window positions. Positions persist to IndexedDB through ZenFS and fail soft if storage is unavailable.
+- `components/windows/Window.tsx` is the one window shell: title bar, close button, 4px drag threshold, grain body and a 70vh scroll clamp. It has three placements:
+  - document-positioned on desktop (`utils/windowLayout.ts` picks and clamps the spot)
+  - in-flow under 768px, except About and Merlin, which float
+  - viewport-docked for `merlinChat`
+- To add a window: extend `WindowKey`, add its entry to `windows` in the context, give it a default icon position in `zenFs.ts`, write a component that wraps `<Window>`, and mount it in `App.tsx`.
 
-`LoadingScreen` stamps `document.body.dataset.introStarted` when power is pressed and `introDone` when the desktop is live, dispatching matching `zulluos:intro-start` / `zulluos:intro-complete` events. `Wizard.tsx` consumes both — see §5. (Those event names are an internal string constant left over from this project's former name; they're just a private channel between the two files and aren't shown to visitors, so renaming them isn't part of this pass.)
+### Taskbar
 
-## 3. Theming — one OS look, and the pink-to-blue story
+`components/Navbar.tsx` renders the brand label, one `IconTask` button per open window, and the socials from `data/profile.ts`. Task buttons show icon and caption on desktop. Under 768px they become 44px icon-only buttons with an `aria-label`, and the row scrolls sideways if it overflows. The taskbar height is `--taskbar-h` (40px, 44px under 768px).
 
-**Shaka's Portfolio ships the classic Windows XP look only.** The upstream project had a second "dark"/neon theme (a looping magenta circuit-board video with a HAL-9000-style eye) and a navbar toggle to switch between them. That whole layer was removed: `ThemeContext.tsx` now pins `theme = 'xp'`, and `theEye.tsx`, `ToggleButton.tsx`, and `cpuLoop.mp4` are deleted.
+### Desktop decor
 
-Two consequences worth knowing if you dig in:
+- `components/desktop/Polaroids.tsx`: one placeholder photo, top-right. It develops on first view and straightens on hover.
+- `components/desktop/StickyNote.tsx`: the availability note and the quote, in Caveat.
+- `components/PenUnderline.tsx`: the single pen stroke used wherever Shaka speaks for himself.
+- `components/desktop/OrbitBand.tsx` and `SkillsOrbit.tsx`: the skills orbit below the fold. It has 4 rings (18, 24, 30 and 38s), a pause control, and hover to pause. It renders static under 768px and under reduced motion.
+- Styles live in `styles/decor.css` and `styles/orbit.css`.
 
-- `Icon.tsx` and `IconTask.tsx` still branch on `themeState === 'dark'`. Those branches are now unreachable, which is why `themeState` stays in the context (typed as the single-member union `'xp'`) rather than being ripped out — they can be simplified whenever someone touches those files.
-- The Credits window used to open **only** by clicking the eye. With the eye gone it has a desktop icon instead (`App.tsx` filters out only `start`). Don't re-hide it — that window carries the attribution to the original author.
+### Case studies
 
-The remaining pink-to-blue work, since the upstream palette was magenta:
+- Data: `src/data/caseStudies.ts`, one entry per study. It holds the eyebrow, headline, summary, metrics, the five sections, the concept flag, links and media.
+- Folder: `components/windows/Projects.tsx` (the Case Studies window). Viewer: `components/windows/CaseStudyViewer.tsx`, opened through `openCaseStudy(id)`.
+- Media: `components/CaseStudyMedia.tsx`. It mounts a video only when the tile is in view, plays one tile at a time, and keeps the poster under reduced motion or Save-Data.
+- Files: `public/case-studies/<id>/walkthrough.mp4` and `poster.webp`.
 
-- **CSS colors** — `--accent-color` in `App.css` (`#2f71cd`), the navbar gradient, and the xterm terminal background (`#0a1a33` in `terminalCommandProcessor.ts`).
-- **Already blue** — the XP "Bliss" wallpaper and XP window chrome needed no change.
+### Video pipeline
 
-### A trap in `App.css`
+`node scripts/media/record-walkthroughs.cjs <id> <url>` records a silent 10 to 12s scroll-through with Playwright and encodes it with ffmpeg. The clip is under 2MB and holds the hero for 2s. The poster is a 1280x720 WebP taken from the hero. Raw captures go to `scripts/media/.raw/` (git-ignored). To record a local build, serve it first with `node scripts/media/static-server.cjs <dir> [port=4400] [prefix]`.
 
-`App.css` carries an inherited `*:focus { outline: 0 !important }` (plus `button { outline: none }`). That wildcard means **no outline-based focus ring can ever win**, whatever its specificity — so keyboard users get no focus indicator anywhere on the site. `PowerOnScreen` works around it locally by drawing its focus ring with `box-shadow`, which that rule doesn't touch. Fixing this properly across the site is item 3 in §9.
+### QA scripts
 
-## 4. Content — where to edit what
+All of them `require` Playwright from `../frozen-basket/node_modules`. That path is hard-coded, so install Playwright locally if that folder moves.
 
-| Content | File |
+| Script | What it checks |
 |---|---|
-| About story (typewriter) | `src/components/windows/About.tsx` |
-| About avatar | `src/img/shaka-avatar.svg` (placeholder — swap for a photo) |
-| Project cards | `src/data/projects.ts` |
-| Project posters | `src/assets/projects/*.svg` |
-| Terminal identity & commands | `src/utils/terminalCommandProcessor.ts` (`user`, `machine`, `whoami`, `skills`, `socials`) |
-| Social links | `src/components/Navbar.tsx` and `src/components/windows/Start.tsx` |
-| Merlin's knowledge base | `src/components/wizard/wizardBrain.ts` |
-| Credits | `src/components/windows/Credits.tsx` |
+| `node scripts/qa/shots.cjs <url> <tag>` | Screenshots at 1440, 1280, 768 and 375 into `docs/shots/<tag>-<width>.png`, plus page error counts |
+| `node scripts/qa/case-windows-b2.cjs <url>` | Case Studies, the viewer, Hire Me and Approach: fonts, no ASK text, no em dash, Esc and focus |
+| `node scripts/qa/merlin.cjs <url>` | 24 Merlin checks: click vs drag, one chat instance, silence when idle, taskbar button, close and reopen |
+| `node scripts/qa/probe.cjs <WxH> <url> "<js body>"` | Runs one expression in the page and prints the result |
 
-**Adding a project** is one entry in `projects.ts`:
+### Tokens
 
-```ts
-{
-  id: 'my-project',
-  title: 'My Project',
-  description: 'What it does and why it matters.',
-  technologies: 'React, Python, …',
-  poster: myPosterImport,        // static image; `video` is also supported
-  repo: 'https://github.com/TheyloveShaka/my-project',
-  live: 'https://my-project.example.com',
-}
-```
+`src/styles/tokens.css` is the source of truth for colour, type scale, the 4px spacing scale (`--sp-*`), radius, elevation, and motion durations and easings. Reduced motion zeroes the object durations. `src/styles/motion.ts` mirrors the durations and easings as numbers for framer-motion and JS timers, so change both together. Components use tokens, not raw px, ms or hex values.
 
-## 5. Merlin, the wizard assistant
+### Fonts
 
-Merlin is the genuine 1997 Microsoft Agent character, resurrected via [`clippyts`](https://www.npmjs.com/package/clippyts). The package is fully self-contained (sprite sheets are embedded base64 data-URIs), so he works on any static host with no CDN.
+@fontsource, imported in `main.tsx`: Fira Sans (UI, and title bars at 13px bold), Bricolage Grotesque Variable (display), Caveat Variable (the handwriting voice) and Fira Mono (boot and terminal). `fontaine` in `vite.config.ts` generates metric-matched fallback faces, so nothing falls back to a system default.
 
-**Architecture** — three layers, all in `src/components/wizard/`:
+### Grain
 
-1. **`Wizard.tsx`** — loads the agent once (guarded against React StrictMode double-mounting), positions him bottom-right, plays greeting/idle animations, and toggles the chat when he's clicked. He is gated on the boot signals from §2 so he only appears once the desktop is live.
-2. **`WizardChat.tsx`** — the "Ask Merlin" window: message list, typing indicator, suggestion chips, input. Replies also trigger `agent.speak()` + a fitting animation, and some intents perform *site actions* (opening the Projects/About/terminal windows through `WindowsContext`).
-3. **`wizardBrain.ts`** — a dependency-free scripted engine: normalizes input, scores ~17 intents (weighted multi-word keyword matches + Levenshtein typo tolerance for single words), picks a random response from the matched intent, falls back to suggestions. **No API, no backend, no cost** — by design, so the site runs free on static hosting.
+- Global: `.global-live-grain` in `App.css` is a fixed layer at 200% size. It uses a 192px tile at opacity 0.8, animated `0.5s steps(6)`, and stops under reduced motion.
+- Grey bodies: `.grain::before` in `decor.css` uses the same tile at `--grain-size` (224px) and `--grain-opacity` (0.42), with multiply.
+- Texture: `src/assets/textures/live-grain.png`, generated to match the reference's statistics.
 
-**The Vite gotcha (important if you upgrade clippyts or add agents):** clippyts loads agents with a template-literal dynamic import that Rollup can't statically resolve. In production the browser literally requests `/assets/agents/Merlin.js`. Two things make this work: a copy of that file lives in `public/assets/agents/`, and `vite.config.ts` has `optimizeDeps.exclude: ['clippyts']` so dev mode resolves it correctly too. If you add another character (Clippy, Bonzi, Genie…), copy its file from `node_modules/clippyts/dist/agents/` into `public/assets/agents/`.
+### Merlin
 
-**Styling:** `wizard.css` contains XP.css window/button/input/scrollbar rules extracted from [`xp.css`](https://github.com/botoxparty/XP.css) and re-scoped under `.wizard-chat`. XP.css is deliberately **not** imported globally — it styles bare `button`/`input` elements and would break the site's custom XP look.
+- `components/wizard/Wizard.tsx` loads the clippyts agent (`public/assets/agents/Merlin.js`) after the boot finishes. It stays silent until clicked.
+- A click moves less than 4px and always opens or focuses the chat. It never toggles it closed.
+- The sprite is clamped inside the viewport, above the taskbar, after load, after a drag and on resize.
+- `WizardChat.tsx` renders the chat in the shared window shell, docked to the viewport, with its own taskbar button and wizard icon (`assets/icons/xp/merlin.svg`).
+- `wizardBrain.ts` maps keywords to an intent. An intent returns reply text, a spoken line, an agent animation and an optional window to open.
 
-**Stacking gotcha:** the chat window (`.wizard-chat-root`, z-index 2147483100) must stay *above* Merlin's `.clippy` element (2147483000). They overlap in the bottom-right corner, and at equal z-index Merlin's DOM node swallows clicks meant for the Send button.
+## 2. Where to edit copy and data
 
-**Timing gotcha (bitten twice):** `useDesktopReady()` has a safety-net timer so Merlin can't be lost forever if the "desktop is live" signal never fires. That timer must only start once `intro-start` has fired — i.e. after the visitor presses power — **never at page load**. The welcome screen waits indefinitely for a human, so a page-load timer means anyone who reads the copy for 20 seconds gets a wizard materialising on top of a powered-off computer. If you touch this, verify by sitting on the welcome screen for a minute without clicking.
+| What | File |
+|---|---|
+| Voice, drafts, sign-off status | `docs/COPY.md` |
+| About (the master copy is verbatim, do not edit it without Shaka) | `src/components/windows/About.tsx` |
+| Email, booking link, socials | `src/data/profile.ts` |
+| Case studies | `src/data/caseStudies.ts` |
+| Stack groups and brand icons (About list and orbit) | `src/data/stack.ts` |
+| Hire Me, My Approach.txt | `src/components/windows/HireMe.tsx`, `Approach.tsx` |
+| Sticky note, photo caption | `src/components/desktop/StickyNote.tsx`, `Polaroids.tsx` |
+| Merlin's replies | `src/components/wizard/wizardBrain.ts` (first message in `WizardChat.tsx`) |
+| Window captions and icons | `src/contexts/WindowsContext.tsx` |
+| Meta tags | `index.html` |
 
-## 6. Terminal
+## 3. Open ASK list
 
-`Xterm.tsx` hosts an xterm.js terminal backed by a ZenFS in-browser filesystem. Commands live in `terminalCommandProcessor.ts`: standard shell fare (`ls`, `cd`, `mkdir`, `cat`, `echo`…), system fun (`neofetch`, `deviceinfo` with real client data), boot control (`fastboot`, `restart`), and identity commands (`whoami`, `skills`, `socials`). Prompt: `shaka@VOYAGER1`.
+These are waiting on Shaka. Each one is a launch blocker until it is resolved.
 
-## 7. Build & deployment
+1. Resume PDF. The Resume icon opens `#`.
+2. Email and booking link (`profile.email` and `profile.bookingUrl`). Hire Me's "Open email draft" stays disabled until the email is set.
+3. Real LinkedIn, Instagram and WhatsApp addresses. They currently point at the bare platform URLs.
+4. The portrait and its caption. Only the placeholder photo ships.
+5. School and degree, years building, and roles held, for the About experience paragraph.
+6. Budget bands in UGX for Hire Me.
+7. The live URL per case study, and which ones are concepts. Frozen Basket's concept flag is unconfirmed.
+8. Privacy: The Venue Menu summary names a real person. Confirm before it ships.
+9. OG image (1200x630), canonical URL and theme colour.
 
-```bash
-npm run dev       # dev server
-npm run build     # production build → dist/
-npm run preview   # serve dist/ locally
-npm run lint      # ESLint (some pre-existing upstream warnings remain)
-```
+## 4. Deploy
 
-- **Vercel** (recommended): import the repo at vercel.com/new — works with zero config, like The Venue Menu.
-- **GitHub Pages**: `npm run deploy` publishes `dist/` via `gh-pages`, **but** the site would be served from `/zulluos-portfolio/` (the repo name, unchanged by this rename), so `vite.config.ts` needs `base: '/zulluos-portfolio/'` first. Without it, all assets 404.
-
-## 8. Known limitations
-
-- LinkedIn / X / Instagram links are `href="#"` placeholders (marked with `TODO` comments).
-- The About avatar is a placeholder SVG, and the Resume button points nowhere yet.
-- Projects #3 and #4 are intentional "coming soon" placeholder cards.
-- Merlin's chat is scripted; it does not understand free-form questions outside its intents (that's the free-hosting trade-off — see Future Work).
-
-## 9. Future work
-
-Roughly in priority order:
-
-1. **Fill the placeholders** — real LinkedIn/X/Instagram URLs, a real photo in the About window, a hosted resume PDF for the Resume icon, and real projects in slots #3/#4 (Lulimi-Lingo is a candidate once it has a README).
-2. **Deploy + custom domain** — Vercel deploy, then a proper domain; re-add a `CNAME`/redirect once chosen.
-3. **Restore focus indicators site-wide** — remove the blanket `*:focus { outline: 0 !important }` from `App.css` (see §3) and replace it with a proper `:focus-visible` ring, auditing every interactive surface so nothing looks accidental. This is a WCAG 2.4.7 failure inherited from upstream.
-4. **Give Merlin a real brain (optional)** — swap `wizardBrain.ts` for a Claude API call behind a Vercel serverless function (keeps the key server-side). The scripted brain stays as offline fallback. Cost: fractions of a cent per chat with a small model.
-5. **Spotify "now playing"** — needs OAuth + a token-refresh backend, so it depends on the Vercel move: a serverless function can expose a `/api/now-playing` endpoint the desktop can poll, rendered as an XP tray widget.
-6. **Mobile polish** — the wizard chat already becomes a bottom sheet ≤600px; the window system itself deserves a proper small-screen audit.
-7. **Performance** — code-split the heavier windows (xterm) with dynamic `import()` so they only load when the terminal window opens.
-8. **More desktop toys** — Minesweeper or Solitaire clone, a "My Computer" window listing real repos via the GitHub API, screensaver after idle (astrophysics-themed, obviously).
-9. **CI** — a GitHub Action running `npm run build` + `npm run lint` on push, and auto-deploy on main.
-10. **Lint cleanup** — burn down the pre-existing upstream ESLint errors (mostly `any` types and unused vars in context files).
+`npm run deploy` builds and publishes `dist/` through gh-pages. `dist/` is git-ignored and untracked.

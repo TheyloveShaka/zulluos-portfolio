@@ -1,32 +1,11 @@
-/**
- * wizardBrain.ts
- * --------------
- * Tiny, fully client-side "brain" for the Merlin chat widget. No backend,
- * no API calls — just keyword/fuzzy matching against a scripted intent list,
- * which is all a static GitHub Pages site can do.
- *
- * Matching strategy:
- *  - normalize(): lowercase + strip punctuation so "Who's Shaka?" and
- *    "who is shaka" match the same way.
- *  - Multi-word keywords ("who made you") are matched as substrings of the
- *    whole message and score higher (they're unambiguous).
- *  - Single-word keywords are matched against individual words, with a small
- *    Levenshtein-distance allowance so typos ("prjects", "conect") still hit.
- *  - The intent with the highest score wins; ties go to whichever intent is
- *    declared first in INTENTS (more specific intents are listed earlier).
- */
-
 import { WindowKey } from '@contexts/WindowsContext'
 
 export interface WizardIntent {
   id: string
   keywords: string[]
   responses: string[]
-  /** Shorter lines for the speech balloon; falls back to responses if omitted. */
   speak?: string[]
-  /** clippyts animation name to play alongside the reply. */
   animation: string
-  /** Optional site action: opens a desktop window via WindowsContext. */
   action?: WindowKey
 }
 
@@ -72,17 +51,17 @@ export const INTENTS: WizardIntent[] = [
     keywords: ['who made you', 'who created you', 'who are you', 'what are you', 'your creator', 'are you clippy', 'are you an ai'],
     responses: [
       'I\'m Merlin, a Microsoft Agent from 1997, resurrected via clippyts. I used to help people with Word documents; now I help people find Shaka\'s contact info.',
-      'I\'m Merlin — a Microsoft Office Assistant, brought back from the dead via a library called clippyts. No paperclip cousins were harmed in the making of this portfolio.',
+      'I\'m Merlin, a Microsoft Office Assistant, brought back from the dead via a library called clippyts. No paperclip cousins were harmed in the making of this portfolio.',
     ],
     speak: ['I\'m Merlin, a Microsoft Agent from 1997, resurrected via clippyts.'],
     animation: 'DoMagic1',
   },
   {
     id: 'what-is-this-site',
-    keywords: ['what is this site', 'what is this', 'what is zulluos', 'what am i looking at', 'this website', 'this os', 'explain this site'],
+    keywords: ['what is this site', 'what is this', 'what am i looking at', 'this website', 'this os', 'explain this site'],
     responses: [
-      'This is Shaka\'s Portfolio — a Windows XP desktop, faithfully remade in the browser. It\'s adapted from kisimoff.com by Valentin Kisimov, with full credit.',
-      'You\'re looking at Shaka\'s Portfolio: an XP-flavored desktop that doubles as a portfolio site. Double-click around, open some windows, maybe don\'t format the C: drive.',
+      'This is Shaka\'s Portfolio, a Windows XP desktop, faithfully remade in the browser. It\'s adapted from kisimoff.com by Valentin Kisimov, with full credit.',
+      'You\'re looking at Shaka\'s Portfolio: an XP-flavored desktop that doubles as a portfolio site. Click around, open some windows, maybe don\'t format the C: drive.',
     ],
     speak: ['This is Shaka\'s Portfolio: an XP desktop remade to showcase his work.'],
     animation: 'Explain',
@@ -103,8 +82,8 @@ export const INTENTS: WizardIntent[] = [
     id: 'greeting',
     keywords: ['hello', 'hi', 'hey', 'yo', 'sup', 'howdy', 'greetings'],
     responses: [
-      'Hello there! I\'m Merlin. Ask me about Shaka\'s projects, skills, or how to reach him.',
-      'Hey! Welcome to Shaka\'s Portfolio. Poke around, or ask me a question — that\'s what I\'m here for.',
+      'Hello there! I\'m Merlin. Ask me about Shaka\'s work, his stack, or how to reach him.',
+      'Hey! Welcome to Shaka\'s Portfolio. Poke around, or ask me a question, that\'s what I\'m here for.',
       'Howdy! Try asking who built this thing, or what he\'s been working on.',
     ],
     animation: 'Greet',
@@ -123,7 +102,7 @@ export const INTENTS: WizardIntent[] = [
     keywords: ['bye', 'goodbye', 'see ya', 'later', 'cya', 'gotta go'],
     responses: [
       'See you around! Feel free to click me again if you have more questions.',
-      'Goodbye! I\'ll be right here, doing my little idle animations, if you need me.',
+      'Goodbye! I\'ll be right here in the corner if you need me.',
     ],
     animation: 'Wave',
   },
@@ -131,7 +110,7 @@ export const INTENTS: WizardIntent[] = [
     id: 'story',
     keywords: ['story', 'origin story', 'how did he start', 'why does he code', 'his journey', 'how did he get into this'],
     responses: [
-      'A long time ago, Shaka touched a computer to make it do something he wanted — and it worked. His life was never the same. Everything since has been about recreating that magical moment.',
+      'A long time ago, Shaka touched a computer to make it do something he wanted, and it worked. His life was never the same. Everything since has been about recreating that magical moment.',
     ],
     speak: ['He touched a computer, made it do something he wanted, and never stopped chasing that feeling.'],
     animation: 'Thinking',
@@ -153,44 +132,45 @@ export const INTENTS: WizardIntent[] = [
     ],
     speak: ['The Venue Menu: Uganda\'s wedding venue discovery platform, built with React and Supabase.'],
     animation: 'Explain',
-    action: 'projects',
+    action: 'caseStudies',
   },
   {
-    id: 'zulluos-project',
-    keywords: ['zulluos project', 'this portfolio', 'xp desktop', 'kisimoff', 'how was this site built'],
+    id: 'this-site-build',
+    keywords: ['this portfolio', 'xp desktop', 'kisimoff', 'how was this site built'],
     responses: [
-      'Shaka\'s Portfolio is this very site — an XP desktop remake adapted from kisimoff.com by Valentin Kisimov, with full credit to the original. I live here as the built-in assistant.',
+      'Shaka\'s Portfolio is this very site, an XP desktop remake adapted from kisimoff.com by Valentin Kisimov, with full credit to the original. I live here as the built-in assistant.',
     ],
-    speak: ['This is Shaka\'s Portfolio itself — an XP remake adapted from kisimoff.com.'],
+    speak: ['This is Shaka\'s Portfolio itself, an XP remake adapted from kisimoff.com.'],
     animation: 'Explain',
-    action: 'projects',
+    action: 'caseStudies',
   },
   {
-    id: 'projects',
-    keywords: ['projects', 'portfolio', 'show projects', 'show me projects', 'what has he built', 'his work', 'what did he build'],
+    id: 'case-studies',
+    keywords: ['case studies', 'case study', 'projects', 'portfolio', 'show projects', 'show me projects', 'what has he built', 'his work', 'what did he build'],
     responses: [
-      'Opening his Projects folder now. Highlights: The Venue Menu (a wedding venue platform for Kampala) and Shaka\'s Portfolio (this very desktop you\'re using).',
+      'Opening his Case Studies folder now. Start with The Venue Menu, a wedding and venue discovery platform for Kampala, then work your way through the rest.',
     ],
-    speak: ['Opening Projects — The Venue Menu and Shaka\'s Portfolio are the highlights.'],
+    speak: ['Opening Case Studies. Start with The Venue Menu.'],
     animation: 'Announce',
-    action: 'projects',
+    action: 'caseStudies',
   },
   {
     id: 'contact',
     keywords: ['contact', 'email', 'reach him', 'get in touch', 'hire him', 'linkedin', 'twitter', 'github', 'reach out', 'contact info'],
     responses: [
-      'You can find Shaka on GitHub at github.com/TheyloveShaka, or email him at shakanathan.z@gmail.com. LinkedIn and X are coming soon.',
+      'I\'m opening Hire Me, that\'s the fastest way to reach him. His GitHub, LinkedIn, Instagram and WhatsApp sit in the taskbar too.',
     ],
-    speak: ['GitHub: github.com/TheyloveShaka, or email shakanathan.z@gmail.com.'],
+    speak: ['Opening Hire Me. His socials are in the taskbar.'],
     animation: 'Suggest',
+    action: 'hireMe',
   },
   {
     id: 'about',
     keywords: ['about', 'who is shaka', 'shaka', 'nathan', 'who built this', 'developer', 'who made this site', 'bio', 'tell me about him'],
     responses: [
-      'Shaka Nathan K — Developer & AI Engineer, based in Kampala, Uganda. GitHub handle: TheyloveShaka. I\'m opening the About window for the full picture.',
+      'Shaka Nathan K: developer, AI engineer and project lead, based in Kampala, Uganda. I\'m opening About for the full picture.',
     ],
-    speak: ['Shaka Nathan K — Developer and AI Engineer, based in Kampala, Uganda.'],
+    speak: ['Shaka Nathan K: developer, AI engineer and project lead, based in Kampala.'],
     animation: 'Announce',
     action: 'about',
   },
@@ -214,17 +194,17 @@ export const INTENTS: WizardIntent[] = [
   {
     id: 'music',
     keywords: ['music', 'play music', 'song', 'playlist', 'play a song'],
-    responses: ['No jukebox on this desktop right now — but check out his Projects folder instead.'],
-    speak: ['No jukebox here right now — try the Projects folder instead.'],
+    responses: ['No jukebox on this desktop right now, but check out his Case Studies folder instead.'],
+    speak: ['No jukebox here right now, try the Case Studies folder instead.'],
     animation: 'Explain',
-    action: 'projects',
+    action: 'caseStudies',
   },
 ]
 
 const FALLBACK_RESPONSES = [
-  'I\'m not sure I follow. Try asking about Shaka\'s projects, skills, or how to contact him.',
-  'Hmm, that one\'s outside my scripted knowledge. Ask me about his projects, his skills, or say hi!',
-  'I only know a handful of tricks. Try: "what are your skills", "show me your projects", or "how do I contact you".',
+  'I\'m not sure I follow. Try asking about Shaka\'s case studies, his stack, or how to reach him.',
+  'Hmm, that one\'s outside my scripted knowledge. Ask me about his case studies, his stack, or say hi!',
+  'I only know a handful of tricks. Try: "what are his skills", "show me his case studies", or "how do I reach him".',
 ]
 
 export const getWizardReply = (rawMessage: string): WizardReply => {

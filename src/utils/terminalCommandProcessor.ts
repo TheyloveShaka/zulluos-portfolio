@@ -1,28 +1,13 @@
-// src/utils/terminalCommandProcessor.ts
 import { Terminal } from 'xterm'
 import { fs } from '@zenfs/core'
 
 import { type ITerminalOptions } from 'xterm'
 let currentDirectory = '/'
 import { ClientInfo } from '@contexts/types'
-import { isMobile } from 'react-device-detect'
 import { saveFastBootFlag } from '@/utils/zenFs'
-
-// Make user and machine configurable and save them in a file like bashrc or something this could
-// potentiallye evolve to a settings menu.
-
-//ipconfig -> get ip
-//mv and cp
-//code / nano
-//whoami
-//date
-//history + up and down
-//tail / head
-//htop
 
 const user = 'shaka'
 const machine = 'VOYAGER1'
-
 
 export const getPrompt = (): string => {
   const homeDir = '/'
@@ -156,7 +141,6 @@ export const processCommand = (terminalString: string, terminal: Terminal): void
         saveFastBootFlag(false)
         terminal.write('Fastboot disabled\r\n')
         terminal.write('Execute restart or refresh the page to see the loading screen\r\n')
-
       } else {
         terminal.write('Usage: fastboot [on|off]\r\n')
       }
@@ -179,26 +163,26 @@ export const processCommand = (terminalString: string, terminal: Terminal): void
             break
           };
           const colorsA = [
-            '\x1b[40m \x1b[0m', // Black
-            '\x1b[41m \x1b[0m', // Red
-            '\x1b[42m \x1b[0m', // Green
-            '\x1b[43m \x1b[0m', // Yellow
-            '\x1b[44m \x1b[0m', // Blue
-            '\x1b[45m \x1b[0m', // Magenta
-            '\x1b[46m \x1b[0m', // Cyan
-            '\x1b[47m \x1b[0m', // White
+            '\x1b[40m \x1b[0m',
+            '\x1b[41m \x1b[0m',
+            '\x1b[42m \x1b[0m',
+            '\x1b[43m \x1b[0m',
+            '\x1b[44m \x1b[0m',
+            '\x1b[45m \x1b[0m',
+            '\x1b[46m \x1b[0m',
+            '\x1b[47m \x1b[0m',
 
           ]
 
           const colorsB = [
-            '\x1b[100m \x1b[0m', // Bright Black
-            '\x1b[101m \x1b[0m', // Bright Red
-            '\x1b[102m \x1b[0m', // Bright Green
-            '\x1b[103m \x1b[0m', // Bright Yellow
-            '\x1b[104m \x1b[0m', // Bright Blue
-            '\x1b[105m \x1b[0m', // Bright Magenta
-            '\x1b[106m \x1b[0m', // Bright Cyan
-            '\x1b[107m \x1b[0m', // Bright White
+            '\x1b[100m \x1b[0m',
+            '\x1b[101m \x1b[0m',
+            '\x1b[102m \x1b[0m',
+            '\x1b[103m \x1b[0m',
+            '\x1b[104m \x1b[0m',
+            '\x1b[105m \x1b[0m',
+            '\x1b[106m \x1b[0m',
+            '\x1b[107m \x1b[0m',
           ]
           terminal.write(`     #########       \x1b[1;31mOS:\x1b[0m ${clientInfo.osName} ${clientInfo.osVersion}\r\n`)
           terminal.write(`   ##          ###   \x1b[1;31mDevice Type:\x1b[0m ${clientInfo.deviceType}\r\n`)
@@ -246,7 +230,6 @@ export const processCommand = (terminalString: string, terminal: Terminal): void
           terminal.write(`Location: ${clientInfo.location || 'N/A'}\r\n`)
           terminal.write(`Coordinates: ${clientInfo.coordinates || 'N/A'}\r\n`)
           terminal.write(`ISP: ${clientInfo.isp || 'N/A'}\r\n`)
-
         } else {
           terminal.write('Error: Client information not available\r\n')
         }
@@ -274,8 +257,6 @@ export const processCommand = (terminalString: string, terminal: Terminal): void
   }
 }
 
-
-
 export const config: ITerminalOptions & { cols: number; rows: number } = {
   cols: 70,
   lineHeight: 1.3,
@@ -284,7 +265,7 @@ export const config: ITerminalOptions & { cols: number; rows: number } = {
   cursorInactiveStyle: 'none',
   cursorStyle: 'block',
   cursorWidth: 8,
-  fontFamily: 'Ubuntu Mono, Consolas, Lucida Console, Courier New, monospace',
+  fontFamily: '"Fira Mono", "Fira Mono Fallback", monospace',
   fontSize: 16,
   fontWeight: '100',
   rows: 15,

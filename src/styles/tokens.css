@@ -1,0 +1,260 @@
+:root {
+  color-scheme: only light;
+
+  --luna-50: #EEF4FC;
+  --luna-100: #DCE8F9;
+  --luna-200: #B9D0F2;
+  --luna-300: #8DB2E8;
+  --luna-400: #5E91DC;
+  --luna-500: #2F71CD;
+  --luna-600: #235DB3;
+  --luna-700: #124A88;
+  --luna-800: #0E3A6C;
+  --luna-900: #0A246A;
+
+  --xp-title-active: linear-gradient(0deg, #003BD6 2%, #0066FD 15%, #0064FD 20%, #0058E6 85%, #368FFC 95%, #0D60E8 98%);
+  --xp-title-inactive: linear-gradient(0deg, #3F5C9E 2%, #4E6FB3 15%, #4A68AB 85%, #6C88C6 95%, #5874B4 98%);
+  --xp-title-emboss: #0A1F7A;
+  --xp-frame: #003BD6;
+  --xp-taskbar: linear-gradient(0deg, #1741A3 0%, #2258D6 9%, #2363DF 22%, #2258D6 82%, #3678CE 93%, #2258D6 100%);
+  --xp-taskbar-btn: #2A68D6;
+  --xp-taskbar-btn-active: #173F96;
+  --xp-tray: #0A70C6;
+  --xp-select: #316AC5;
+  --xp-close: #E2583E;
+  --xp-close-hover: #D24B31;
+  --xp-close-pressed: #B63E28;
+  --xp-ctl: #2E7BEA;
+  --xp-btn-face: linear-gradient(180deg, #FBFBF8 0%, #ECEBE5 86%, #D8D0C4 100%);
+  --xp-btn-face-pressed: linear-gradient(180deg, #D8D0C4 0%, #ECEBE5 14%, #F4F3EE 100%);
+  --xp-btn-border: #003C74;
+  --xp-hover-glow: #F8B330;
+  --xp-hover-glow-hi: #FFF0CF;
+  --xp-header-strip: linear-gradient(180deg, #F5F5F1 0%, #E4E3DC 100%);
+
+  --paper-50: #FAF8F2;
+  --paper-100: #F7F2E8;
+  --paper-edge: #E2DCCD;
+  --paper-300: #E4DAC4;
+  --paper-tape: rgba(181, 155, 105, 0.56);
+  --paper-900: #332A17;
+  --note: #FFF1A8;
+  --note-edge: #D7C779;
+  --tooltip: #FFFFE1;
+  --develop-veil: #4A3F2E;
+
+  --green-500: #2A8032;
+  --green-600: #1E6A26;
+  --green-700: #185A1F;
+  --green-boot: #72D07A;
+  --btn-primary: linear-gradient(180deg, #2A8032 0%, #1E6A26 100%);
+  --btn-primary-pressed: linear-gradient(180deg, #1E6A26 0%, #185A1F 100%);
+
+  --n-0: #FAFBFE;
+  --field: #FBFCFD;
+  --n-50: #F3F4F6;
+  --n-100: #EAEBEE;
+  --n-150: #E3E3E3;
+  --n-200: #D9DADE;
+  --n-300: #BDC1C8;
+  --n-400: #979DA7;
+  --n-500: #737A85;
+  --n-600: #4E5561;
+  --n-800: #2A2F37;
+  --n-900: #20242A;
+  --field-disabled: #EEEFF1;
+  --btn-disabled: #F1F1EE;
+
+  --ink: var(--n-900);
+  --ink-2: var(--n-600);
+  --ink-disabled: var(--n-500);
+  --ink-on-color: var(--n-0);
+  --link: var(--luna-700);
+  --link-hover: var(--luna-800);
+  --pen: #1F3D99;
+  --field-border: #516D8F;
+  --field-border-hover: var(--luna-600);
+  --field-border-focus: var(--luna-700);
+  --caption-halo: rgba(6, 22, 61, 0.9);
+  --caption-halo-soft: rgba(6, 22, 61, 0.55);
+  --video-scrim: linear-gradient(to top, rgba(10, 14, 24, 0.82) 0%, rgba(10, 14, 24, 0) 60%);
+
+  --success: var(--green-600);
+  --danger: #A8322B;
+  --info: var(--luna-700);
+  --concept-fill: #FDF0C8;
+  --concept-border: #A26F12;
+  --concept-ink: #563B06;
+
+  --surface-window: var(--n-150);
+  --surface-paper: var(--paper-50);
+  --surface-sunken: var(--n-200);
+  --surface-field: var(--field);
+  --surface-overlay: var(--n-50);
+
+  --wallpaper-fallback: #3F7D20;
+
+  --boot-bg: #0B0D10;
+  --boot-ink: #C8D1D9;
+  --boot-dim: #8A96A3;
+  --boot-ok: var(--green-boot);
+
+  --focus-gap: #FAFBFE;
+  --focus-ring: #0A246A;
+  --focus-shadow: 0 0 0 2px var(--focus-gap), 0 0 0 4px var(--focus-ring);
+
+  --grain-opacity: 0.42;
+  --grain-size: 224px;
+
+  --font-ui: 'Fira Sans', 'Fira Sans Fallback', sans-serif;
+  --font-display: 'Bricolage Grotesque Variable', 'Bricolage Fallback', sans-serif;
+  --font-hand: 'Caveat Variable', 'Caveat Fallback', cursive;
+  --font-mono: 'Fira Mono', 'Fira Mono Fallback', monospace;
+
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+  --fw-heavy: 800;
+
+  --fs-display-xl: clamp(28px, 1.127vw + 23.77px, 40px);
+  --fs-display-l: clamp(20px, 0.469vw + 18.24px, 25px);
+  --fs-display-m: clamp(23px, 0.751vw + 20.18px, 31px);
+  --fs-title: clamp(18px, 0.188vw + 17.3px, 20px);
+  --fs-lead: clamp(15px, 0.282vw + 13.94px, 18px);
+  --fs-body: clamp(15px, 0.094vw + 14.65px, 16px);
+  --fs-ui: 15px;
+  --fs-small: 14px;
+  --fs-chrome: 13px;
+  --fs-meta: 12px;
+  --fs-hand-note: clamp(21px, 0.188vw + 20.3px, 23px);
+  --fs-hand-caption: clamp(16px, 0.188vw + 15.3px, 18px);
+  --fs-hand-head: clamp(24px, 0.188vw + 23.3px, 26px);
+  --fs-boot: clamp(12px, 0.188vw + 11.3px, 14px);
+  --fs-field: 16px;
+
+  --lh-display-xl: 1.1;
+  --lh-display-l: 1.24;
+  --lh-display-m: 1.2;
+  --lh-title: 1.3;
+  --lh-lead: 1.5;
+  --lh-body: 1.55;
+  --lh-small: 1.5;
+  --lh-chrome: 18px;
+  --lh-meta: 18px;
+  --lh-hand-note: 1.17;
+  --lh-hand-caption: 1.1;
+  --lh-hand-head: 1.15;
+  --lh-boot: 1.45;
+
+  --ls-display-xl: -0.02em;
+  --ls-display-l: -0.012em;
+  --ls-display-m: -0.015em;
+  --ls-title: -0.005em;
+  --ls-ui: 0.005em;
+  --ls-meta: 0.02em;
+  --ls-hand-caption: 0.01em;
+
+  --measure: 64ch;
+
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-7: 28px;
+  --sp-8: 32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+  --sp-16: 64px;
+
+  --titlebar-h: 30px;
+  --frame-w: 3px;
+  --taskbar-h: 40px;
+  --taskbar-btn-h: 32px;
+  --control-h: 44px;
+  --control-compact-h: 28px;
+  --title-ctl: 21px;
+  --hit-min: 44px;
+  --scrollbar-w: 14px;
+
+  --radius-0: 0;
+  --radius-paper: 1px;
+  --radius-control: 3px;
+  --radius-tile: 6px;
+  --radius-window: 8px 8px 0 0;
+  --radius-start: 0 10px 10px 0;
+  --radius-round: 50%;
+
+  --shadow-xs: 0 1px 2px rgba(14, 26, 58, 0.14);
+  --shadow-paper: 0 1px 2px rgba(14, 26, 58, 0.10), 0 4px 14px rgba(14, 26, 58, 0.08);
+  --shadow-object: 0 1px 2px rgba(14, 26, 58, 0.14), 0 3px 7px rgba(14, 26, 58, 0.20);
+  --shadow-object-lift: 0 3px 5px rgba(14, 26, 58, 0.12), 0 10px 18px rgba(14, 26, 58, 0.25);
+  --shadow-note: 1px 2px 3px rgba(14, 26, 58, 0.14), 2px 8px 14px rgba(14, 26, 58, 0.16);
+  --shadow-window: 0 2px 4px rgba(8, 24, 72, 0.22), 0 12px 28px rgba(8, 24, 72, 0.24);
+  --shadow-window-inactive: 0 2px 4px rgba(8, 24, 72, 0.16), 0 8px 18px rgba(8, 24, 72, 0.14);
+  --shadow-menu: 2px 3px 5px rgba(8, 24, 72, 0.30);
+  --shadow-field-inset: inset 1px 1px 0 rgba(14, 26, 58, 0.08);
+  --shadow-btn-highlight: inset 0 1px 0 rgba(250, 251, 254, 0.28);
+  --shadow-press: inset 0 2px 3px rgba(8, 30, 12, 0.28);
+  --shadow-press-neutral: inset 0 2px 3px rgba(14, 26, 58, 0.22);
+  --shadow-hover-glow: inset 0 0 0 2px var(--xp-hover-glow), inset 0 2px 0 2px var(--xp-hover-glow-hi);
+  --bevel-raised: inset 1px 1px 0 #FAFBFE, inset -1px -1px 0 #979DA7;
+  --bevel-sunken: inset 1px 1px 0 #979DA7, inset -1px -1px 0 #FAFBFE;
+  --text-shadow-title: 1px 1px 0 var(--xp-title-emboss);
+  --text-shadow-primary: 0 1px 0 rgba(8, 40, 12, 0.35);
+  --text-shadow-caption: 0 1px 2px var(--caption-halo), 0 0 6px var(--caption-halo-soft);
+
+  --dur-press: 80ms;
+  --dur-micro: 120ms;
+  --dur-fast: 180ms;
+  --dur-minimise: 200ms;
+  --dur-object: 220ms;
+  --dur-object-return: 280ms;
+  --dur-handoff: 240ms;
+  --dur-pen: 360ms;
+  --dur-develop: 560ms;
+  --dur-caret-blink: 530ms;
+  --dur-copied: 2000ms;
+  --stagger-object: 70ms;
+  --stagger-icon: 30ms;
+  --orbit-1: 18s;
+  --orbit-2: 24s;
+  --orbit-3: 30s;
+  --orbit-4: 38s;
+
+  --boot-total: 900ms;
+  --boot-char: 8ms;
+  --boot-dot: 90ms;
+  --boot-reduced-hold: 600ms;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-lift: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in: cubic-bezier(0.55, 0, 1, 0.45);
+  --ease-draw: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-press: cubic-bezier(0.2, 0, 0, 1);
+  --ease-linear: linear;
+}
+
+@media (max-width: 767px) {
+  :root {
+    --frame-w: 2px;
+    --taskbar-h: 44px;
+    --scrollbar-w: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-object: 0ms;
+    --dur-object-return: 0ms;
+    --dur-develop: 0ms;
+    --dur-pen: 0ms;
+    --dur-minimise: 0ms;
+    --stagger-object: 0ms;
+    --stagger-icon: 0ms;
+    --boot-char: 0ms;
+    --boot-dot: 0ms;
+  }
+}

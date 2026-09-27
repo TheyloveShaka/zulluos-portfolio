@@ -1,4 +1,3 @@
-// src/contexts/ClientContext.tsx
 import { createContext, useContext, ReactNode, useState, useEffect } from 'react'
 import {
     osVersion,
@@ -12,9 +11,9 @@ import {
     isMobile,
 } from 'react-device-detect'
 import axios from 'axios'
-import { fs } from '@zenfs/core' // Import the fs module from @zenfs/core
+import { fs } from '@zenfs/core'
+import { fsReady } from '@/utils/zenFs'
 import { ClientInfo } from '@contexts/types'
-
 
 interface ClientContextType {
     clientInfo: ClientInfo;
@@ -80,7 +79,6 @@ export const ClientProvider = ({ children }: ClientProviderProps) => {
         getGeoData()
     }, [])
 
-
     useEffect(() => {
         const updateClientInfo = () => {
             setClientInfo((prevInfo) => ({
@@ -96,22 +94,20 @@ export const ClientProvider = ({ children }: ClientProviderProps) => {
                 browserVersion,
             }))
 
-            if (!fs.existsSync('/tmp/')) {
-                fs.mkdirSync('/tmp/')
-            }
-
-            // Check if the file is empty before writing to it
-            if (fs.existsSync('/tmp/clientInfo.json') && fs.statSync('/tmp/clientInfo.json').size > 0) {
-                fs.writeFileSync('/tmp/clientInfo.json', JSON.stringify(clientInfo))
-            } else {
-                fs.writeFileSync('/tmp/clientInfo.json', JSON.stringify(clientInfo))
-            }
+            void fsReady.then(() => {
+                try {
+                    if (!fs.existsSync('/tmp/')) {
+                        fs.mkdirSync('/tmp/')
+                    }
+                    fs.writeFileSync('/tmp/clientInfo.json', JSON.stringify(clientInfo))
+                } catch (error) {
+                    console.error('Error persisting client info:', error)
+                }
+            })
         }
 
-        // Delay the execution by 1000ms
         const timeoutId = setTimeout(updateClientInfo, 1000)
 
-        // Cleanup the timeout if the component unmounts
         return () => clearTimeout(timeoutId)
     }, [clientInfo])
 

@@ -1,13 +1,3 @@
-// Regenerates every favicon / app icon in `public/` from the site's mark.
-//
-// Source of truth is `src/img/zullu-icon.svg` — the small-size badge variant
-// of the logo (solid background + reversed-out "Z", no orbital ring), which
-// stays legible down to 16px. Re-run with `npm run icons:generate` any time
-// the mark changes.
-//
-// Rasterization: `sharp` renders the PNGs at every required size. `.ico`
-// files can't be written by sharp directly, so `favicon.ico` is assembled
-// from 16/32/48px PNG buffers with `png-to-ico`.
 
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
@@ -18,7 +8,7 @@ import pngToIco from 'png-to-ico'
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const root = resolve(__dirname, '..')
 
-const iconSvgPath = resolve(root, 'src/img/zullu-icon.svg')
+const iconSvgPath = resolve(root, 'src/img/s-monogram.svg')
 const publicDir = resolve(root, 'public')
 
 const iconSvg = readFileSync(iconSvgPath)
@@ -38,7 +28,6 @@ async function writePng(relativePath: string, size: number) {
   console.log(`  wrote ${relativePath} (${size}x${size}, ${buffer.length} bytes)`)
 }
 
-// { output file : pixel size }
 const pngTargets: Record<string, number> = {
   'favicon-16x16.png': 16,
   'favicon-32x32.png': 32,
@@ -73,7 +62,7 @@ async function generateFaviconIco() {
 async function copyFaviconSvg() {
   const outPath = resolve(publicDir, 'favicon.svg')
   writeFileSync(outPath, iconSvg)
-  console.log('  wrote favicon.svg (copied from src/img/zullu-icon.svg)')
+  console.log('  wrote favicon.svg (copied from src/img/s-monogram.svg)')
 }
 
 async function main() {

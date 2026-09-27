@@ -1,4 +1,3 @@
-// src/components/windows/DeviceInfo.tsx
 import React from 'react'
 import Window from './Window'
 import { useWindows } from '@contexts/WindowsContext'
@@ -10,7 +9,7 @@ const DeviceInfo = () => {
 
   return (
     <Window window={deviceInfoWindow}>
-      <div className="aboutText">
+      <div className="window-text">
         Viewing from: {clientInfo.deviceType} <br></br>
         {clientInfo.isMobile ? (
           <span>

@@ -1,11 +1,11 @@
-import { createContext, useContext, ReactNode } from 'react'
-import { useAnimation } from 'framer-motion'
+import { createContext, useCallback, useContext, useMemo, useState, ReactNode } from 'react'
+import type { Transition } from 'framer-motion'
+import { durFast } from '@/styles/motion'
 
 interface AnimationsContextType {
-  navbarAnimation: any;
-  iconsAnimation: any;
-  backgroundAnimation: any;
-  elementsSequenceAnimation: () => Promise<void>;
+  desktopRevealed: boolean;
+  revealTransition: Transition;
+  revealDesktop: (transition: Transition) => void;
 }
 
 const AnimationsContext = createContext<AnimationsContextType | undefined>(undefined)
@@ -15,48 +15,21 @@ interface AnimationsProviderProps {
 }
 
 export const AnimationsProvider = ({ children }: AnimationsProviderProps) => {
-  const navbarAnimation = useAnimation()
-  const iconsAnimation = useAnimation()
-  const backgroundAnimation = useAnimation()
-  const eyeAnimation = useAnimation()
+  const [desktopRevealed, setDesktopRevealed] = useState(false)
+  const [revealTransition, setRevealTransition] = useState<Transition>({ duration: durFast / 1000, delay: 0 })
 
+  const revealDesktop = useCallback((transition: Transition) => {
+    setRevealTransition(transition)
+    setDesktopRevealed(true)
+  }, [])
 
-
-  // const placeholderAnimation = useAnimation()
-
-  const elementsSequenceAnimation = async () => {
-    if (window.innerWidth > 800 && window.innerHeight > 400) {
-      navbarAnimation.set({ y: 100 })
-      await navbarAnimation.start({
-        y: 0,
-        opacity: 1,
-
-        transition: { duration: 1.5, delay: 5 },
-      })
-      await iconsAnimation.start({
-        y: 0,
-        opacity: 1,
-        transition: { duration: 0.7, delay: 0.8 },
-      })
-    } else {
-      navbarAnimation.set({ y: -100 })
-      await iconsAnimation.start({
-        y: 0,
-        opacity: 1,
-        transition: { duration: 0.7, delay: 6.5 },
-      })
-      await navbarAnimation.start({
-        y: 0,
-        opacity: 1,
-
-        transition: { duration: 1.5, delay: 0.8 },
-      })
-    }
-
-  }
+  const value = useMemo(
+    () => ({ desktopRevealed, revealTransition, revealDesktop }),
+    [desktopRevealed, revealTransition, revealDesktop]
+  )
 
   return (
-    <AnimationsContext.Provider value={{ navbarAnimation, iconsAnimation, backgroundAnimation, elementsSequenceAnimation }}>
+    <AnimationsContext.Provider value={value}>
       {children}
     </AnimationsContext.Provider>
   )

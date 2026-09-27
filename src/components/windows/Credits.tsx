@@ -11,9 +11,8 @@ const Credits = () => {
 
   return (
 
-    // <div className="credits" id="credits">
     <Window window={creditsWindow}>
-      <div id="creditsField" className="creditsText">
+      <div className="window-text">
         <WindupChildren>
           <Pace ms={1}>
             <p>
@@ -32,7 +31,7 @@ const Credits = () => {
                 Valentin Kisimov
               </a>
               . Huge thanks to Valentin for open-sourcing such a polished
-              piece of work &mdash; browse the original source on{' '}
+              piece of work. Browse the original source on{' '}
               <a
                 href="https://github.com/kisimoff/portfolio"
                 target="_blank"
@@ -153,7 +152,6 @@ const Credits = () => {
         </WindupChildren>
       </div>
     </Window>
-    // </div>
   )
 }
 
