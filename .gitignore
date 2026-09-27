@@ -29,3 +29,4 @@ build
 scripts/astra/.astra-*-id
 docs/shots/
 scripts/media/.raw/
+.vercel
